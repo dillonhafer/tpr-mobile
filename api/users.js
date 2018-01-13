@@ -5,3 +5,7 @@ export function RequestPasswordResetRequest({ email }) {
     email,
   });
 }
+
+export function RegisterRequest(params) {
+  return _post('/api/register', params);
+}

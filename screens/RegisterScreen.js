@@ -12,11 +12,15 @@ import {
   Alert,
 } from 'react-native';
 
+import { RegisterRequest } from 'api/users';
+import { notice } from 'notify';
 import ArrowButton from 'components/ArrowButton';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
+import { validEmail } from 'utils/helpers';
+import { SetAuthenticationToken, SetCurrentUser } from 'utils/authentication';
 
 export default class SignInScreen extends React.Component {
   static navigationOptions = {
@@ -26,26 +30,43 @@ export default class SignInScreen extends React.Component {
   inputs = [];
 
   state = {
-    name: '',
+    username: '',
+    email: '',
     password: '',
+    passwordConfirmation: '',
     loading: false,
   };
 
   validateFields = () => {
-    const { name, password } = this.state;
-    return name.length > 0 && password.length > 0;
+    const { username, email, password, passwordConfirmation } = this.state;
+    return (
+      username.length > 0 &&
+      username.length <= 30 &&
+      (email.length > 0 ? validEmail(email) : true) &&
+      password.length > 7 &&
+      password === passwordConfirmation
+    );
   };
 
-  signIn = async () => {
-    const { name, password } = this.state;
-    const resp = await SignInRequest({ name, password });
-    console.log(resp);
+  register = async () => {
+    const { username, email, password } = this.state;
+
+    let params = {
+      username,
+      password,
+    };
+    if (email.length > 0 && validEmail(email)) {
+      params.email = email;
+    }
+
+    const resp = await RegisterRequest(params);
     if (resp && resp.ok) {
       SetAuthenticationToken(resp.sessionID);
-      this.props.updateCurrentUser(resp.name);
-      SetCurrentUser(resp.name);
-      // navigateHome(this.props.navigation.dispatch);
-      Alert.alert('You are now signed in!');
+      SetCurrentUser({ name: resp.name });
+      this.props.updateCurrentUser({ name: resp.name });
+
+      notice('Welcome to The Pithy Reader!');
+      this.props.screenProps.parentNavigation.navigate('Main');
     }
   };
 
@@ -53,7 +74,7 @@ export default class SignInScreen extends React.Component {
     this.setState({ loading: true });
     try {
       if (this.validateFields()) {
-        await this.signIn();
+        await this.register();
       } else {
         error('Name/Password are invalid');
       }
@@ -69,7 +90,7 @@ export default class SignInScreen extends React.Component {
   }
 
   render() {
-    const { name, password, loading } = this.state;
+    const { username, email, password, loading } = this.state;
     const valid = this.validateFields();
     return (
       <View style={styles.container}>
@@ -90,7 +111,7 @@ export default class SignInScreen extends React.Component {
                 }}
                 returnKeyType="next"
                 enablesReturnKeyAutomatically={true}
-                onChangeText={name => this.setState({ name })}
+                onChangeText={username => this.setState({ username })}
               />
             </TextInputContainer>
             <TextInputContainer>
@@ -108,8 +129,8 @@ export default class SignInScreen extends React.Component {
                   this.focusNextField('password');
                 }}
                 returnKeyType="next"
-                enablesReturnKeyAutomatically={true}
-                onChangeText={name => this.setState({ name })}
+                enablesReturnKeyAutomatically={false}
+                onChangeText={email => this.setState({ email })}
               />
             </TextInputContainer>
             <TextInputContainer>
@@ -143,7 +164,8 @@ export default class SignInScreen extends React.Component {
                 placeholder="Password Confirmation"
                 returnKeyType="done"
                 onSubmitEditing={this.handleOnPress}
-                onChangeText={password => this.setState({ password })}
+                onChangeText={passwordConfirmation =>
+                  this.setState({ passwordConfirmation })}
               />
             </TextInputContainer>
             <PrimaryButton
