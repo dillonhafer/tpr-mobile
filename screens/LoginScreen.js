@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   LayoutAnimation,
+  Keyboard,
   ActivityIndicator,
   Image,
   StyleSheet,
@@ -40,6 +41,7 @@ class LoginScreen extends Component {
       const user = await GetCurrentUser();
       const isAuthenticated = user && user.name.length > 0;
       if (isAuthenticated) {
+        setTimeout(Keyboard.dismiss, 500);
         this.props.updateCurrentUser(user);
         this.props.screenProps.parentNavigation.navigate('Main');
       }

@@ -3,7 +3,7 @@ import { Platform, View, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 
-import Colors from 'constants/colors';
+import colors from 'constants/colors';
 
 import HomeScreen from 'screens/HomeScreen';
 import ArchiveScreen from 'screens/ArchiveScreen';
@@ -60,15 +60,20 @@ const MainTabTabNavigator = TabNavigator(
             name={iconName}
             size={28}
             style={{ marginBottom: -3 }}
-            color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+            color={focused ? colors.links : colors.background}
           />
         );
       },
     }),
     tabBarComponent: TabBarBottom,
-    tabBarPosition: 'bottom',
-    animationEnabled: false,
     swipeEnabled: false,
+    tabBarOptions: {
+      activeTintColor: colors.links,
+      inactiveTintColor: colors.background,
+      style: {
+        backgroundColor: colors.primary,
+      },
+    },
   },
 );
 
