@@ -18,6 +18,10 @@ import PrimaryButton from 'components/forms/PrimaryButton';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 
+import { validEmail } from 'utils/helpers';
+import { RequestPasswordResetRequest } from 'api/users';
+import { notice } from 'notify';
+
 export default class SignInScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -26,36 +30,29 @@ export default class SignInScreen extends React.Component {
   inputs = [];
 
   state = {
-    name: '',
-    password: '',
+    email: '',
     loading: false,
   };
 
   validateFields = () => {
-    const { name, password } = this.state;
-    return name.length > 0 && password.length > 0;
+    const { email } = this.state;
+    return email.length > 0 && validEmail(email);
   };
 
-  signIn = async () => {
-    const { name, password } = this.state;
-    const resp = await SignInRequest({ name, password });
-    console.log(resp);
-    if (resp && resp.ok) {
-      SetAuthenticationToken(resp.sessionID);
-      this.props.updateCurrentUser(resp.name);
-      SetCurrentUser(resp.name);
-      // navigateHome(this.props.navigation.dispatch);
-      Alert.alert('You are now signed in!');
-    }
+  requestPasswordReset = async () => {
+    const { email } = this.state;
+    await RequestPasswordResetRequest({ email });
+    notice('Please check your email for reset information');
+    this.props.navigation.navigate('SignIn');
   };
 
   handleOnPress = async () => {
     this.setState({ loading: true });
     try {
       if (this.validateFields()) {
-        await this.signIn();
+        await this.requestPasswordReset();
       } else {
-        error('Name/Password are invalid');
+        error('Email is invalid');
       }
     } catch (err) {
       // console.log(err)
@@ -69,7 +66,7 @@ export default class SignInScreen extends React.Component {
   }
 
   render() {
-    const { name, password, loading } = this.state;
+    const { loading } = this.state;
     const valid = this.validateFields();
     return (
       <View style={styles.container}>
@@ -86,7 +83,7 @@ export default class SignInScreen extends React.Component {
                 onSubmitEditing={this.handleOnPress}
                 returnKeyType="done"
                 enablesReturnKeyAutomatically={true}
-                onChangeText={name => this.setState({ name })}
+                onChangeText={email => this.setState({ email })}
               />
             </TextInputContainer>
 
