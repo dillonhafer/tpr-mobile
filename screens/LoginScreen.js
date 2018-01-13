@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Image,
   StyleSheet,
+  Platform,
   Text,
   TextInput,
   Button,
@@ -52,14 +53,41 @@ class LoginScreen extends Component {
 
   render() {
     const hasDomain = this.props.domain && this.props.domain.length > 0;
+
     return (
       <View style={styles.container}>
-        <KeyboardAwareScrollView scrollEnabled={false}>
-          <View style={styles.logoContainer}>
+        {Platform.OS === 'ios' && (
+          <KeyboardAwareScrollView scrollEnabled={false}>
+            <View style={styles.logoContainer}>
+              <Image style={styles.logo} source={logo} />
+              <Text style={styles.logoText}>The Pithy Reader</Text>
+            </View>
+            <TouchableOpacity onPress={_ => this.props.updateDomain('')}>
+              <Text
+                style={{
+                  fontFamily: 'Verdana',
+                  color: colors.background,
+                  textAlign: 'center',
+                }}
+              >
+                {this.props.domain}
+              </Text>
+            </TouchableOpacity>
+            <View style={{ height: 20 }} />
+            {hasDomain ? (
+              <LoginTabNavigator screenProps={this.props.screenProps} />
+            ) : (
+              <DomainSettings />
+            )}
+          </KeyboardAwareScrollView>
+        )}
+
+        {Platform.OS !== 'ios' && [
+          <View key="1" style={styles.logoContainer}>
             <Image style={styles.logo} source={logo} />
             <Text style={styles.logoText}>The Pithy Reader</Text>
-          </View>
-          <TouchableOpacity onPress={_ => this.props.updateDomain('')}>
+          </View>,
+          <TouchableOpacity key="1" onPress={_ => this.props.updateDomain('')}>
             <Text
               style={{
                 fontFamily: 'Verdana',
@@ -69,14 +97,14 @@ class LoginScreen extends Component {
             >
               {this.props.domain}
             </Text>
-          </TouchableOpacity>
-          <View style={{ height: 20 }} />
-          {hasDomain ? (
-            <LoginTabNavigator screenProps={this.props.screenProps} />
+          </TouchableOpacity>,
+          <View key="3" style={{ height: 20 }} />,
+          hasDomain ? (
+            <LoginTabNavigator key="4" screenProps={this.props.screenProps} />
           ) : (
-            <DomainSettings />
-          )}
-        </KeyboardAwareScrollView>
+            <DomainSettings key="4" />
+          ),
+        ]}
       </View>
     );
   }
