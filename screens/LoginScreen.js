@@ -19,7 +19,7 @@ import { updateCurrentUser } from 'actions/users';
 
 import colors from 'constants/colors';
 import logo from 'images/book.png';
-import { SetDomain, GetDomain, GetCurrentUser } from 'utils/authentication';
+import { GetDomain, GetCurrentUser } from 'utils/authentication';
 import DomainSettings from 'components/DomainSettings';
 import LoginTabNavigator from 'navigation/LoginTabNavigator';
 
@@ -48,7 +48,7 @@ class LoginScreen extends Component {
   };
 
   render() {
-    const hasDomain = this.props.domain.length > 0;
+    const hasDomain = this.props.domain && this.props.domain.length > 0;
     return (
       <View style={styles.container}>
         <View style={styles.logoContainer}>

@@ -44,6 +44,7 @@ export default class App extends React.Component {
       Asset.loadAsync([require('images/book.png')]),
       Font.loadAsync({
         ...Ionicons.font,
+        Verdana: require('./assets/fonts/Verdana.ttf'),
       }),
     ]);
   };
