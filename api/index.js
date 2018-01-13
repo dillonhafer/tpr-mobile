@@ -67,18 +67,24 @@ const base = async (path, method, headers = {}, body = {}) => {
       default:
     }
 
+    const contentType = resp.headers.get('Content-Type');
     if (!resp.ok) {
-      const contentType = resp.headers.get('Content-Type');
       const text = await resp.text();
       const err = {
-        error: /json/i.test(contentType) ? JSON.parse(text).error : text.trim(),
+        error: /json/i.test(contentType)
+          ? JSON.parse(text).error
+          : (text || '').trim(),
         status: resp.status,
         ok: false,
       };
       throw err;
     }
 
-    const json = (await resp.json()) || {};
+    let json = {};
+    if (/json/i.test(contentType)) {
+      json = await resp.json();
+    }
+
     return { ...json, ok: true };
   } catch (err) {
     error(err.error || 'Something went wrong');
