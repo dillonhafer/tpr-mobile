@@ -22,6 +22,7 @@ import logo from 'images/book.png';
 import { GetDomain, GetCurrentUser } from 'utils/authentication';
 import DomainSettings from 'components/DomainSettings';
 import LoginTabNavigator from 'navigation/LoginTabNavigator';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 class LoginScreen extends Component {
   componentDidMount() {
@@ -51,27 +52,29 @@ class LoginScreen extends Component {
     const hasDomain = this.props.domain && this.props.domain.length > 0;
     return (
       <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={logo} />
-          <Text style={styles.logoText}>The Pithy Reader</Text>
-        </View>
-        <TouchableOpacity onPress={_ => this.props.updateDomain('')}>
-          <Text
-            style={{
-              fontFamily: 'Verdana',
-              color: colors.background,
-              textAlign: 'center',
-            }}
-          >
-            {this.props.domain}
-          </Text>
-        </TouchableOpacity>
-        <View style={{ height: 20 }} />
-        {hasDomain ? (
-          <LoginTabNavigator screenProps={this.props.screenProps} />
-        ) : (
-          <DomainSettings />
-        )}
+        <KeyboardAwareScrollView scrollEnabled={false}>
+          <View style={styles.logoContainer}>
+            <Image style={styles.logo} source={logo} />
+            <Text style={styles.logoText}>The Pithy Reader</Text>
+          </View>
+          <TouchableOpacity onPress={_ => this.props.updateDomain('')}>
+            <Text
+              style={{
+                fontFamily: 'Verdana',
+                color: colors.background,
+                textAlign: 'center',
+              }}
+            >
+              {this.props.domain}
+            </Text>
+          </TouchableOpacity>
+          <View style={{ height: 20 }} />
+          {hasDomain ? (
+            <LoginTabNavigator screenProps={this.props.screenProps} />
+          ) : (
+            <DomainSettings />
+          )}
+        </KeyboardAwareScrollView>
       </View>
     );
   }
