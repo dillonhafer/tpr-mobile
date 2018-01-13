@@ -3,21 +3,27 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
+import LoginNavigator from './LoginNavigator';
+import registerForPushNotificationsAsync from 'api/registerForPushNotificationsAsync';
 
 const RootStackNavigator = StackNavigator(
   {
+    Login: {
+      screen: LoginNavigator,
+    },
     Main: {
       screen: MainTabNavigator,
     },
   },
   {
+    headerMode: 'none',
     navigationOptions: () => ({
+      gesturesEnabled: false,
       headerTitleStyle: {
         fontWeight: 'normal',
       },
     }),
-  }
+  },
 );
 
 export default class RootNavigator extends React.Component {
@@ -41,10 +47,14 @@ export default class RootNavigator extends React.Component {
     registerForPushNotificationsAsync();
 
     // Watch for incoming notifications
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    this._notificationSubscription = Notifications.addListener(
+      this._handleNotification,
+    );
   }
 
   _handleNotification = ({ origin, data }) => {
-    console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
+    console.log(
+      `Push notification ${origin} with data: ${JSON.stringify(data)}`,
+    );
   };
 }

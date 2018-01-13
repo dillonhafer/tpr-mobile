@@ -1,18 +1,18 @@
 {
   "expo": {
     "name": "tpr",
-    "description": "A very interesting project.",
+    "description": "A fast, simple, and lightweight feed aggregator and reader.",
     "slug": "tpr",
     "privacy": "public",
     "sdkVersion": "24.0.0",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./app-store-assets/logo.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./app-store-assets/tpr-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#7ab0b2"
     },
     "ios": {
       "supportsTablet": true

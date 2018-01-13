@@ -4,6 +4,12 @@ import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 
+// Redux
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducers from 'reducers';
+const store = createStore(reducers);
+
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
@@ -21,9 +27,13 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
-          <RootNavigation />
+          {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
+          {Platform.OS === 'android' && (
+            <View style={styles.statusBarUnderlay} />
+          )}
+          <Provider key="app" store={store}>
+            <RootNavigation />
+          </Provider>
         </View>
       );
     }
@@ -31,16 +41,9 @@ export default class App extends React.Component {
 
   _loadResourcesAsync = async () => {
     return Promise.all([
-      Asset.loadAsync([
-        require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),
-      ]),
+      Asset.loadAsync([require('images/book.png')]),
       Font.loadAsync({
-        // This is the font that we are using for our tab bar
         ...Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       }),
     ]);
   };
@@ -59,7 +62,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#7ab0b2',
   },
   statusBarUnderlay: {
     height: 24,
