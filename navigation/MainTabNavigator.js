@@ -1,24 +1,28 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 
 import Colors from 'constants/colors';
 
 import HomeScreen from 'screens/HomeScreen';
-import LinksScreen from 'screens/LinksScreen';
-import SettingsScreen from 'screens/SettingsScreen';
+import ArchiveScreen from 'screens/ArchiveScreen';
+import FeedsScreen from 'screens/FeedsScreen';
+import AccountScreen from 'screens/AccountScreen';
 
-export default TabNavigator(
+const MainTabTabNavigator = TabNavigator(
   {
     Home: {
       screen: HomeScreen,
     },
-    Links: {
-      screen: LinksScreen,
+    Archive: {
+      screen: ArchiveScreen,
     },
-    Settings: {
-      screen: SettingsScreen,
+    Feeds: {
+      screen: FeedsScreen,
+    },
+    Account: {
+      screen: AccountScreen,
     },
   },
   {
@@ -30,20 +34,26 @@ export default TabNavigator(
           case 'Home':
             iconName =
               Platform.OS === 'ios'
-                ? `ios-information-circle${focused ? '' : '-outline'}`
-                : 'md-information-circle';
+                ? `ios-home${focused ? '' : '-outline'}`
+                : 'md-home';
             break;
-          case 'Links':
+          case 'Archive':
             iconName =
               Platform.OS === 'ios'
-                ? `ios-link${focused ? '' : '-outline'}`
-                : 'md-link';
+                ? `ios-archive${focused ? '' : '-outline'}`
+                : 'md-archive';
             break;
-          case 'Settings':
+          case 'Feeds':
             iconName =
               Platform.OS === 'ios'
-                ? `ios-options${focused ? '' : '-outline'}`
-                : 'md-options';
+                ? `ios-albums${focused ? '' : '-outline'}`
+                : 'md-albums';
+            break;
+          case 'Account':
+            iconName =
+              Platform.OS === 'ios'
+                ? `ios-contact${focused ? '' : '-outline'}`
+                : 'md-contact';
         }
         return (
           <Ionicons
@@ -61,3 +71,14 @@ export default TabNavigator(
     swipeEnabled: false,
   },
 );
+
+export default class MainTabNavigator extends React.Component {
+  render() {
+    StatusBar.setBarStyle('default');
+    return (
+      <MainTabTabNavigator
+        screenProps={{ parentNavigation: this.props.navigation }}
+      />
+    );
+  }
+}

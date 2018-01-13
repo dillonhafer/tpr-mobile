@@ -35,12 +35,15 @@ class LoginScreen extends Component {
   };
 
   checkCurrentUser = async _ => {
-    const user = await GetCurrentUser();
-    console.log(user);
-    const isAuthenticated = user.name.length > 0;
-    if (isAuthenticated) {
-      this.props.updateCurrentUser(user);
-      this.props.screenProps.parentNavigation.navigate('Main');
+    try {
+      const user = await GetCurrentUser();
+      const isAuthenticated = user && user.name.length > 0;
+      if (isAuthenticated) {
+        this.props.updateCurrentUser(user);
+        this.props.screenProps.parentNavigation.navigate('Main');
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -64,7 +67,11 @@ class LoginScreen extends Component {
           </Text>
         </TouchableOpacity>
         <View style={{ height: 20 }} />
-        {hasDomain ? <LoginTabNavigator /> : <DomainSettings />}
+        {hasDomain ? (
+          <LoginTabNavigator screenProps={this.props.screenProps} />
+        ) : (
+          <DomainSettings />
+        )}
       </View>
     );
   }

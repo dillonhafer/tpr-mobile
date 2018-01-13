@@ -43,6 +43,13 @@ const base = async (path, method, headers = {}, body = {}) => {
     }
     const resp = await fetch(baseURL + path, req);
 
+    // Logouts don't work semantically
+    if (path.startsWith('/api/sessions') && method === 'DELETE') {
+      return {
+        ok: true,
+      };
+    }
+
     switch (resp.status) {
       case 503:
         error('We are performing maintenance. We should be done shortly.');
@@ -52,10 +59,8 @@ const base = async (path, method, headers = {}, body = {}) => {
         error('Something went wrong');
         return;
       case 403:
-        error('Permission Denied. This incident will be reported');
-        return;
       case 401:
-        error('You are not logged in. Your session may have expired.');
+        error('Permission Denied. This incident will be reported');
         await RemoveAuthentication();
         Util.reload();
         return;

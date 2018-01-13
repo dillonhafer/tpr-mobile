@@ -32,11 +32,13 @@ class PrimaryButton extends PureComponent {
             justifyContent: 'center',
           }}
         >
-          <ActivityIndicator
-            hideWhenStopped={true}
-            animating={loading}
-            color={colors.background}
-          />
+          <View style={{ marginLeft: -20 }}>
+            <ActivityIndicator
+              hideWhenStopped={true}
+              animating={loading}
+              color={colors.background}
+            />
+          </View>
           <Text
             style={{
               fontFamily: 'Verdana',
