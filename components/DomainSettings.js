@@ -53,6 +53,7 @@ class DomainSettings extends Component {
             autoCapitalize={'none'}
             underlineColorAndroid={'transparent'}
             autoCorrect={false}
+            keyboardType="url"
             onSubmitEditing={this.setDomain}
             returnKeyType="done"
             enablesReturnKeyAutomatically={true}

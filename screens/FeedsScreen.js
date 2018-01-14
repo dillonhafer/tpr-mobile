@@ -1,14 +1,30 @@
 import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
+import { View } from 'react-native';
+
+import { notice } from 'notify';
+import { GetExportURL } from 'utils/authentication';
+import PrimaryButton from 'components/forms/PrimaryButton';
+import { FileSystem } from 'expo';
 
 export default class SettingsScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Feeds',
+  exportXML = async () => {
+    const exportURL = await GetExportURL();
+    await FileSystem.downloadAsync(
+      exportURL,
+      FileSystem.documentDirectory + 'tpr-opml.xml',
+    );
+    notice('Download Complete');
   };
 
   render() {
-    /* Go ahead and delete ExpoConfigView and replace it with your
-     * content, we just wanted to give you a quick view of your config */
-    return <ExpoConfigView />;
+    return (
+      <View style={{ paddingTop: 22 }}>
+        <PrimaryButton
+          onPress={this.exportXML}
+          label="Export"
+          loading={false}
+        />
+      </View>
+    );
   }
 }
