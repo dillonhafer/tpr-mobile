@@ -52,7 +52,7 @@ export default class SignInScreen extends React.Component {
     const { username, email, password } = this.state;
 
     let params = {
-      username,
+      name: username,
       password,
     };
     if (email.length > 0 && validEmail(email)) {
