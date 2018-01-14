@@ -7,92 +7,157 @@ import {
   Text,
   TextInput,
   Button,
-  TouchableOpacity,
+  TouchableHighlight,
   View,
+  RefreshControl,
+  FlatList,
   Alert,
 } from 'react-native';
-import { WebBrowser } from 'expo';
 
-import { MonoText } from '../components/StyledText';
+import {
+  UnreadItemsRequest,
+  MarkItemReadRequest,
+  MarkAllReadRequest,
+} from 'api/items';
+import { WebBrowser } from 'expo';
+import colors from 'constants/colors';
+import PrimaryButton from 'components/forms/PrimaryButton';
+import { values } from 'lodash';
+import moment from 'moment';
 
 export default class HomeScreen extends React.Component {
-  static navigationOptions = {
-    header: null,
-  };
-
-  inputs = [];
-
   state = {
-    name: '',
-    password: '',
-    loading: false,
+    refreshing: false,
+    markAllReadLoading: false,
+    items: [],
   };
 
-  validateFields = () => {
-    const { name, password } = this.state;
-    return name.length > 0 && password.length > 0;
-  };
-
-  signIn = async () => {
-    const { name, password } = this.state;
-    const resp = await SignInRequest({ name, password });
-    console.log(resp);
-    if (resp && resp.ok) {
-      SetAuthenticationToken(resp.sessionID);
-      this.props.updateCurrentUser(resp.name);
-      SetCurrentUser(resp.name);
-      // navigateHome(this.props.navigation.dispatch);
-      Alert.alert('You are now signed in!');
-    }
-  };
-
-  handleOnPress = async () => {
-    this.setState({ loading: true });
-    try {
-      if (this.validateFields()) {
-        await this.signIn();
-      } else {
-        error('Name/Password are invalid');
-      }
-    } catch (err) {
-      // console.log(err)
-    } finally {
-      this.setState({ loading: false });
-    }
-  };
-
-  focusNextField(key) {
-    this.inputs[key].focus();
+  componentDidMount() {
+    this.getUnreadItems();
   }
 
+  getUnreadItems = async () => {
+    const resp = await UnreadItemsRequest();
+    if (resp && resp.ok) {
+      const items = values(resp);
+      this.setState({ items: items.slice(0, -1) });
+    }
+  };
+
+  handleOnPress = async item => {
+    const items = this.state.items.filter(i => {
+      return i.id !== item.id;
+    });
+    await WebBrowser.openBrowserAsync(item.url);
+    this.setState({ items });
+    MarkItemReadRequest(item.id);
+  };
+
+  renderItem = ({ item }) => {
+    return (
+      <TouchableHighlight
+        underlayColor={colors.background}
+        onPress={_ => this.handleOnPress(item)}
+      >
+        <View key={item.title} style={styles.itemRow}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.date}>
+            {moment(item.publication_time * 1000).format(
+              'MMMM Do, YYYY - h:mm a',
+            )}
+          </Text>
+          <Text style={styles.feed}>{item.feed_name}</Text>
+        </View>
+      </TouchableHighlight>
+    );
+  };
+
+  markAllRead = () => {
+    const itemIDs = this.state.items.map(i => i.id);
+    this.setState({ items: [] });
+    MarkAllReadRequest({ itemIDs });
+  };
+
+  renderHeader = length => {
+    const { markAllReadLoading } = this.state;
+    return (
+      <View style={{ padding: 20, paddingTop: 40, alignItems: 'center' }}>
+        <PrimaryButton
+          loading={markAllReadLoading}
+          label="Mark All Read"
+          onPress={this.markAllRead}
+        />
+      </View>
+    );
+  };
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: '100%',
+          backgroundColor: colors.primary,
+        }}
+      />
+    );
+  };
+
+  renderFooter = () => {
+    if (this.state.items.length === 0) {
+      return (
+        <View style={{ padding: 20 }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontFamily: 'Verdana',
+              color: colors.primary,
+            }}
+          >
+            No unread items as of {moment().format('MMMM Do, YYYY, h:mm a')}.
+          </Text>
+        </View>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    try {
+      await this.getUnreadItems();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      this.setState({ refreshing: false });
+    }
+  };
+
   render() {
-    const { name, password, loading } = this.state;
-    const valid = this.validateFields();
+    const { refreshing, items } = this.state;
     return (
       <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <Text style={styles.getStartedText}>
-            Change this text and your app will automatically reload.
-          </Text>
-        </ScrollView>
+        <FlatList
+          contentInset={{ top: 22 }}
+          ListHeaderComponent={this.renderHeader}
+          ListFooterComponent={this.renderFooter}
+          refreshControl={
+            <RefreshControl
+              tintColor={colors.primary}
+              refreshing={refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }
+          style={styles.list}
+          data={items}
+          keyExtractor={i => i.title}
+          ItemSeparatorComponent={this.renderSeparator}
+          renderItem={this.renderItem}
+        />
       </View>
     );
   }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/development-mode',
-    );
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes',
-    );
-  };
 }
 
 const styles = StyleSheet.create({
@@ -110,76 +175,22 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingTop: 30,
   },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
+  title: {
+    fontFamily: 'Verdana',
+    color: colors.links,
+    fontWeight: '700',
   },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
+  itemRow: {
+    padding: 10,
   },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
+  date: {
+    fontFamily: 'Verdana',
+    color: colors.primary,
+    fontSize: 11,
   },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
+  feed: {
+    fontFamily: 'Verdana',
+    color: colors.primary,
+    fontSize: 11,
   },
 });
