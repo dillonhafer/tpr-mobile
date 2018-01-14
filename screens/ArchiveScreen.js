@@ -122,7 +122,7 @@ export default class ArchiveScreen extends React.Component {
           }
           style={styles.list}
           data={items}
-          keyExtractor={i => i.title}
+          keyExtractor={i => i.id}
           ItemSeparatorComponent={this.renderSeparator}
           renderItem={this.renderItem}
         />
