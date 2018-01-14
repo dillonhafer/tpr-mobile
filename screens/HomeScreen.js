@@ -144,6 +144,7 @@ export default class HomeScreen extends React.Component {
       <View style={styles.container}>
         <FlatList
           contentInset={{ top: 22 }}
+          contentOffset={{ y: -22 }}
           ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
           refreshControl={
