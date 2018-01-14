@@ -79,16 +79,20 @@ export default class HomeScreen extends React.Component {
   };
 
   renderHeader = length => {
-    const { markAllReadLoading } = this.state;
-    return (
-      <View style={{ padding: 20, paddingTop: 40, alignItems: 'center' }}>
-        <PrimaryButton
-          loading={markAllReadLoading}
-          label="Mark All Read"
-          onPress={this.markAllRead}
-        />
-      </View>
-    );
+    if (this.state.items.length > 0) {
+      const { markAllReadLoading } = this.state;
+      return (
+        <View style={{ padding: 20, paddingTop: 40, alignItems: 'center' }}>
+          <PrimaryButton
+            loading={markAllReadLoading}
+            label="Mark All Read"
+            onPress={this.markAllRead}
+          />
+        </View>
+      );
+    } else {
+      return null;
+    }
   };
 
   renderSeparator = () => {
@@ -106,7 +110,7 @@ export default class HomeScreen extends React.Component {
   renderFooter = () => {
     if (this.state.items.length === 0) {
       return (
-        <View style={{ padding: 20 }}>
+        <View style={{ padding: 30, marginTop: 30 }}>
           <Text
             style={{
               textAlign: 'center',
