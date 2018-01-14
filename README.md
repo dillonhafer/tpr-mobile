@@ -1,4 +1,4 @@
-# TPR Mobile
+# The Pithy Reader - Mobile
 
 :book: React Native client for https://github.com/jackc/tpr
 
