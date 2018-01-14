@@ -15,7 +15,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { AllFeedsRequest, UnsubscribeFeedRequest } from 'api/feeds';
+import {
+  AllFeedsRequest,
+  SubscribeFeedRequest,
+  UnsubscribeFeedRequest,
+} from 'api/feeds';
 import { WebBrowser } from 'expo';
 import colors from 'constants/colors';
 import { notice } from 'notify';
@@ -24,12 +28,17 @@ import PrimaryButton from 'components/forms/PrimaryButton';
 import { FileSystem } from 'expo';
 import { values } from 'lodash';
 import moment from 'moment';
+import Form from 'components/forms/Form';
+import TextInputContainer from 'components/forms/TextInputContainer';
 
 export default class SettingsScreen extends React.Component {
   state = {
     refreshing: false,
     feeds: [],
+    url: '',
   };
+
+  inputs = [];
 
   componentDidMount() {
     this.getFeeds();
@@ -57,6 +66,15 @@ export default class SettingsScreen extends React.Component {
     if (resp && resp.ok) {
       const feeds = this.state.feeds.filter(feed => feed.feed_id !== feedID);
       this.setState({ feeds });
+    }
+  };
+
+  handleSubscribe = async () => {
+    const resp = await SubscribeFeedRequest({ url: this.state.url });
+    if (resp && resp.ok) {
+      this.setState({ url: '' });
+      this.inputs['url'].clear();
+      this.getFeeds();
     }
   };
 
@@ -122,7 +140,34 @@ export default class SettingsScreen extends React.Component {
 
   renderHeader = () => {
     return (
-      <PrimaryButton onPress={this.exportXML} label="Export" loading={false} />
+      <View style={styles.headerContainer}>
+        <Form>
+          <TextInputContainer>
+            <TextInput
+              placeholder="Feed URL"
+              autoCapitalize={'none'}
+              underlineColorAndroid={'transparent'}
+              autoCorrect={false}
+              keyboardType="url"
+              onSubmitEditing={this.handleSubscribe}
+              ref={input => {
+                this.inputs['url'] = input;
+              }}
+              returnKeyType="done"
+              enablesReturnKeyAutomatically={true}
+              onChangeText={url =>
+                this.setState({
+                  url,
+                })}
+            />
+          </TextInputContainer>
+          <PrimaryButton
+            onPress={this.handleSubscribe}
+            label="Subscribe"
+            loading={false}
+          />
+        </Form>
+      </View>
     );
   };
 
@@ -157,16 +202,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
   contentContainer: {
     paddingTop: 30,
   },
+  headerContainer: {},
   title: {
     fontFamily: 'Verdana',
     color: colors.links,
