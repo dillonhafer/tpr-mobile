@@ -12,7 +12,7 @@
     "icon": "./app-store-assets/logo.png",
     "splash": {
       "image": "./app-store-assets/tpr-splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#7ab0b2"
     },
     "ios": {
