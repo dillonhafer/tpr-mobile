@@ -4,6 +4,10 @@ export function UnreadItemsRequest() {
   return _get('/api/items/unread');
 }
 
+export function ArchivedItemsRequest() {
+  return _get('/api/items/archived');
+}
+
 export function MarkItemReadRequest(itemID) {
   return _delete(`/api/items/unread/${itemID}`);
 }
