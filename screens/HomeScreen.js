@@ -28,6 +28,7 @@ import moment from 'moment';
 export default class HomeScreen extends React.Component {
   state = {
     refreshing: false,
+    lastRefreshDate: moment(),
     markAllReadLoading: false,
     items: [],
   };
@@ -40,7 +41,8 @@ export default class HomeScreen extends React.Component {
     const resp = await UnreadItemsRequest();
     if (resp && resp.ok) {
       const items = values(resp);
-      this.setState({ items: items.slice(0, -1) });
+      const lastRefreshDate = moment();
+      this.setState({ lastRefreshDate, items: items.slice(0, -1) });
     }
   };
 
@@ -118,7 +120,8 @@ export default class HomeScreen extends React.Component {
               color: colors.primary,
             }}
           >
-            No unread items as of {moment().format('MMMM Do, YYYY, h:mm a')}.
+            No unread items as of{' '}
+            {this.state.lastRefreshDate.format('MMMM Do, YYYY, h:mm a')}.
           </Text>
         </View>
       );
