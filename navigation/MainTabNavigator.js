@@ -8,7 +8,7 @@ import colors from 'constants/colors';
 import HomeScreen from 'screens/HomeScreen';
 import ArchiveScreen from 'screens/ArchiveScreen';
 import FeedsScreen from 'screens/FeedsScreen';
-import AccountScreen from 'screens/AccountScreen';
+import AccountNavigator from 'navigation/AccountNavigator';
 
 const MainTabTabNavigator = TabNavigator(
   {
@@ -22,7 +22,7 @@ const MainTabTabNavigator = TabNavigator(
       screen: FeedsScreen,
     },
     Account: {
-      screen: AccountScreen,
+      screen: AccountNavigator,
     },
   },
   {

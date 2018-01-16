@@ -117,8 +117,13 @@ class AccountScreen extends React.Component {
   };
 
   renderItem = ({ item }) => {
+    const iconName =
+      Platform.OS === 'ios' ? 'ios-arrow-forward' : 'md-arrow-round-forward';
     return (
-      <TouchableHighlight underlayColor={colors.background} onPress={_ => {}}>
+      <TouchableHighlight
+        underlayColor={colors.background}
+        onPress={_ => this.props.navigation.navigate(item.key)}
+      >
         <View key={item.title} style={styles.itemRow}>
           <View
             style={{
@@ -130,7 +135,7 @@ class AccountScreen extends React.Component {
           >
             <Text style={styles.itemText}>{item.key}</Text>
             <Ionicons
-              name={'ios-arrow-forward'}
+              name={iconName}
               size={24}
               style={{ color: colors.links }}
             />
