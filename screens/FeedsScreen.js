@@ -30,6 +30,8 @@ import { values } from 'lodash';
 import moment from 'moment';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
+import Device from 'utils/Device';
+const isTablet = Device.isTablet();
 
 export default class SettingsScreen extends React.Component {
   state = {
@@ -59,6 +61,27 @@ export default class SettingsScreen extends React.Component {
       FileSystem.documentDirectory + 'tpr-opml.xml',
     );
     notice('Download Complete');
+  };
+
+  confirmUnsubscribe = feedID => {
+    Alert.alert(
+      'Unsubscribe',
+      'Are you sure you want to unsubscribe?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Unsubscribe',
+          style: 'destructive',
+          onPress: async () => {
+            await this.handleUnsubscribe(feedID);
+          },
+        },
+      ],
+      { cancelable: true },
+    );
   };
 
   handleUnsubscribe = async feedID => {
@@ -107,7 +130,9 @@ export default class SettingsScreen extends React.Component {
           </View>
         </TouchableHighlight>
         <View style={styles.unsubscribeContainer}>
-          <TouchableOpacity onPress={_ => this.handleUnsubscribe(feed.feed_id)}>
+          <TouchableOpacity
+            onPress={_ => this.confirmUnsubscribe(feed.feed_id)}
+          >
             <Text style={styles.unsubscribe}>Unsubscribe</Text>
           </TouchableOpacity>
         </View>
@@ -171,29 +196,71 @@ export default class SettingsScreen extends React.Component {
     );
   };
 
-  render() {
+  renderTablet() {
     const { refreshing, feeds } = this.state;
     return (
       <View style={styles.container}>
-        <FlatList
-          contentInset={{ top: 22 }}
-          contentOffset={{ y: -22 }}
-          ListHeaderComponent={this.renderHeader}
-          refreshControl={
-            <RefreshControl
-              tintColor={colors.primary}
-              refreshing={refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-          style={styles.list}
-          data={feeds}
-          keyExtractor={i => i.feed_id}
-          ItemSeparatorComponent={this.renderSeparator}
-          renderItem={this.renderItem}
-        />
+        <View key="main" style={styles.mainContainer}>
+          <FlatList
+            contentInset={{ top: 22 }}
+            contentOffset={{ y: -22 }}
+            ListHeaderComponent={this.renderHeader}
+            style={styles.list}
+            data={[]}
+          />
+        </View>
+        <View key="side" style={styles.sidebarContainer}>
+          <FlatList
+            contentInset={{ top: 22 }}
+            contentOffset={{ y: -22 }}
+            refreshControl={
+              <RefreshControl
+                tintColor={colors.primary}
+                refreshing={refreshing}
+                onRefresh={this.onRefresh}
+              />
+            }
+            style={styles.list}
+            data={feeds}
+            keyExtractor={i => i.feed_id}
+            ItemSeparatorComponent={this.renderSeparator}
+            renderItem={this.renderItem}
+          />
+        </View>
       </View>
     );
+  }
+
+  renderPhone() {
+    const { refreshing, feeds } = this.state;
+    return (
+      <View style={styles.container}>
+        <View style={styles.mainContainer}>
+          <FlatList
+            contentInset={{ top: 22 }}
+            contentOffset={{ y: -22 }}
+            ListHeaderComponent={this.renderHeader}
+            refreshControl={
+              <RefreshControl
+                tintColor={colors.primary}
+                refreshing={refreshing}
+                onRefresh={this.onRefresh}
+              />
+            }
+            style={styles.list}
+            data={feeds}
+            keyExtractor={i => i.feed_id}
+            ItemSeparatorComponent={this.renderSeparator}
+            renderItem={this.renderItem}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  render() {
+    const { refreshing, feeds } = this.state;
+    return isTablet ? this.renderTablet() : this.renderPhone();
   }
 }
 
@@ -201,6 +268,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    ...(isTablet ? { flexDirection: 'row' } : {}),
+  },
+  mainContainer: {
+    flex: 1,
+    ...(isTablet ? { maxWidth: '35%' } : {}),
+  },
+  sidebarContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 0.5,
+    borderColor: 'transparent',
+    borderLeftColor: colors.primary,
   },
   contentContainer: {
     paddingTop: 30,
