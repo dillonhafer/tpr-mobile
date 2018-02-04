@@ -60,12 +60,15 @@ export default class SettingsScreen extends React.Component {
   importXML = async () => {
     this.setState({ importLoading: true });
     try {
-      const file = await DocumentPicker.getDocumentAsync({
-        type: 'application/xml',
-      });
+      const type = Platform.OS === 'ios' ? 'application/xml' : '*/*';
+      const file = await DocumentPicker.getDocumentAsync({ type });
       if (file.type === 'success') {
         let data = new FormData();
-        data.append('file', { uri: file.uri, name: file.name });
+        data.append('file', {
+          uri: file.uri,
+          name: file.name,
+          type: 'multipart/form-data',
+        });
         const resp = await ImportFeedRequest(data);
         if (resp && resp.ok) {
           this.getFeeds();
@@ -92,7 +95,9 @@ export default class SettingsScreen extends React.Component {
         FileSystem.documentDirectory + 'tpr-opml.xml',
       );
       if (resp.status === 200) {
-        await Share.share({ title: 'Export OPML File', url: resp.uri });
+        if (Platform.OS === 'ios') {
+          await Share.share({ title: 'Export OPML File', url: resp.uri });
+        }
       } else {
         error(
           `${resp.status} Could not export. Your session may have expired.`,
@@ -207,7 +212,6 @@ export default class SettingsScreen extends React.Component {
 
   renderHeader = () => {
     const { exportLoading, importLoading } = this.state;
-    const ioEnabled = Platform.OS === 'ios';
 
     return (
       <View style={styles.headerContainer}>
@@ -241,10 +245,7 @@ export default class SettingsScreen extends React.Component {
         <Form>
           <PrimaryButton
             onPress={this.importXML}
-            label={
-              ioEnabled ? 'Import OPML File' : 'Import OPML File (iOS only)'
-            }
-            disabled={!ioEnabled}
+            label={'Import OPML File'}
             loading={importLoading}
           />
         </Form>
@@ -252,10 +253,7 @@ export default class SettingsScreen extends React.Component {
         <Form>
           <PrimaryButton
             onPress={this.exportXML}
-            label={
-              ioEnabled ? 'Export OPML File' : 'Export OPML File (iOS only)'
-            }
-            disabled={!ioEnabled}
+            label={'Export OPML File'}
             loading={exportLoading}
           />
         </Form>
