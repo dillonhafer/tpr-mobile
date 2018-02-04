@@ -24,6 +24,7 @@ import {
   RemoveAuthentication,
   GetAuthenticationToken,
 } from 'utils/authentication';
+import { Constants } from 'expo';
 import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 
@@ -117,6 +118,11 @@ class AccountScreen extends PureComponent {
             label="Logout"
             loading={loading}
           />
+        </View>
+        <View style={styles.version}>
+          <Text style={styles.versionText}>
+            Version {Constants.manifest.version}
+          </Text>
         </View>
       </View>
     );
@@ -269,6 +275,12 @@ const styles = {
     fontSize: 68,
     textAlign: 'center',
     color: colors.primary,
+  },
+  versionText: {
+    textAlign: 'center',
+    color: colors.links,
+    fontFamily: 'Verdana',
+    fontWeight: '700',
   },
 };
 
