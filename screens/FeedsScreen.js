@@ -39,6 +39,7 @@ export default class SettingsScreen extends React.Component {
     refreshing: false,
     feeds: [],
     url: '',
+    exportLoading: false,
   };
 
   inputs = [];
@@ -56,6 +57,7 @@ export default class SettingsScreen extends React.Component {
   };
 
   exportXML = async () => {
+    this.setState({ exportLoading: true });
     try {
       const exportURL = await GetExportURL();
       const resp = await FileSystem.downloadAsync(
@@ -63,7 +65,7 @@ export default class SettingsScreen extends React.Component {
         FileSystem.documentDirectory + 'tpr-opml.xml',
       );
       if (resp.status === 200) {
-        Share.share({ title: 'Export OPML File', url: resp.uri });
+        await Share.share({ title: 'Export OPML File', url: resp.uri });
       } else {
         error(
           `${resp.status} Could not export. Your session may have expired.`,
@@ -71,6 +73,8 @@ export default class SettingsScreen extends React.Component {
       }
     } catch (err) {
       error('Something went wrong');
+    } finally {
+      this.setState({ exportLoading: false });
     }
   };
 
@@ -175,6 +179,7 @@ export default class SettingsScreen extends React.Component {
   };
 
   renderHeader = () => {
+    const { exportLoading } = this.state;
     const exportEnabled = Platform.OS === 'ios';
 
     return (
@@ -213,7 +218,7 @@ export default class SettingsScreen extends React.Component {
               exportEnabled ? 'Export OPML File' : 'Export OPML File (iOS only)'
             }
             disabled={!exportEnabled}
-            loading={false}
+            loading={exportLoading}
           />
         </Form>
       </View>
