@@ -16,7 +16,7 @@
       "backgroundColor": "#7ab0b2"
     },
     "ios": {
-      "buildNumber": "2",
+      "buildNumber": "3",
       "usesIcloudStorage": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.dillonhafer.tpr",
