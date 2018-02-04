@@ -21,6 +21,8 @@ import TextInputContainer from 'components/forms/TextInputContainer';
 import { validEmail } from 'utils/helpers';
 import { RequestPasswordResetRequest } from 'api/users';
 import { notice } from 'notify';
+import Device from 'utils/Device';
+const isTablet = Device.isTablet();
 
 export default class SignInScreen extends React.Component {
   static navigationOptions = {
@@ -114,6 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingLeft: 20,
     paddingRight: 20,
+    ...(isTablet ? { width: 400, alignSelf: 'center' } : {}),
   },
   formContainer: {
     backgroundColor: colors.background,

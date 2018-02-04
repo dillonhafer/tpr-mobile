@@ -25,6 +25,8 @@ import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 
 import { SetAuthenticationToken, SetCurrentUser } from 'utils/authentication';
+import Device from 'utils/Device';
+const isTablet = Device.isTablet();
 
 class SignInScreen extends React.Component {
   static navigationOptions = {
@@ -85,7 +87,6 @@ class SignInScreen extends React.Component {
           <Form>
             <TextInputContainer>
               <TextInput
-                autoFocus={true}
                 style={{ height: 50 }}
                 placeholder="User name"
                 autoCapitalize={'none'}
@@ -150,6 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingLeft: 20,
     paddingRight: 20,
+    ...(isTablet ? { width: 400, alignSelf: 'center' } : {}),
   },
   formContainer: {
     backgroundColor: colors.background,
