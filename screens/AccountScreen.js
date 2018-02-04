@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import {
   Platform,
   View,
@@ -24,14 +24,20 @@ import {
   RemoveAuthentication,
   GetAuthenticationToken,
 } from 'utils/authentication';
+import Device from 'utils/Device';
+const isTablet = Device.isTablet();
 
-class AccountScreen extends React.Component {
+import ChangeEmailScreen from 'screens/ChangeEmailScreen';
+import ChangePasswordScreen from 'screens/ChangePasswordScreen';
+
+class AccountScreen extends PureComponent {
   state = {
     loading: false,
     user: {
       name: '',
       email: '',
     },
+    sideBar: '',
   };
 
   componentDidMount() {
@@ -116,13 +122,25 @@ class AccountScreen extends React.Component {
     );
   };
 
+  handleOnPress = key => {
+    if (!isTablet) {
+      return this.props.navigation.navigate(key);
+    }
+
+    this.setState({ sideBar: key });
+  };
+
   renderItem = ({ item }) => {
     const iconName =
       Platform.OS === 'ios' ? 'ios-arrow-forward' : 'md-arrow-round-forward';
     return (
       <TouchableHighlight
+        style={{
+          backgroundColor:
+            this.state.sideBar === item.key ? colors.background : 'transparent',
+        }}
         underlayColor={colors.background}
-        onPress={_ => this.props.navigation.navigate(item.key)}
+        onPress={_ => this.handleOnPress(item.key)}
       >
         <View key={item.title} style={styles.itemRow}>
           <View
@@ -157,6 +175,27 @@ class AccountScreen extends React.Component {
     );
   };
 
+  renderSideItem = () => {
+    if (isTablet) {
+      let SideComponent;
+
+      switch (this.state.sideBar) {
+        case 'Change Password':
+          SideComponent = <ChangePasswordScreen />;
+          break;
+        case 'Change Email':
+          SideComponent = <ChangeEmailScreen />;
+          break;
+        default:
+          SideComponent = <View />;
+      }
+
+      return <View style={styles.sidebarContainer}>{SideComponent}</View>;
+    } else {
+      return null;
+    }
+  };
+
   render() {
     const { loading, user } = this.state;
     const items = [
@@ -167,15 +206,18 @@ class AccountScreen extends React.Component {
     ];
     return (
       <View style={styles.container}>
-        <FlatList
-          contentInset={{ top: 42 }}
-          contentOffset={{ y: -42 }}
-          ListHeaderComponent={this.renderHeader}
-          ListFooterComponent={this.renderFooter}
-          data={items}
-          ItemSeparatorComponent={this.renderSeparator}
-          renderItem={this.renderItem}
-        />
+        <View style={styles.mainContainer}>
+          <FlatList
+            contentInset={{ top: 42 }}
+            contentOffset={{ y: -42 }}
+            ListHeaderComponent={this.renderHeader}
+            ListFooterComponent={this.renderFooter}
+            data={items}
+            ItemSeparatorComponent={this.renderSeparator}
+            renderItem={this.renderItem}
+          />
+        </View>
+        {this.renderSideItem()}
       </View>
     );
   }
@@ -185,6 +227,18 @@ const styles = {
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    ...(isTablet ? { flexDirection: 'row' } : {}),
+  },
+  mainContainer: {
+    flex: 1,
+    ...(isTablet ? { maxWidth: '35%' } : {}),
+  },
+  sidebarContainer: {
+    flex: 1,
+    backgroundColor: '#dedede',
+    borderWidth: 0.5,
+    borderColor: 'transparent',
+    borderLeftColor: colors.primary,
   },
   userContainer: {
     padding: 20,

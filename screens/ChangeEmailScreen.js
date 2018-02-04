@@ -14,6 +14,8 @@ import CancelButton from 'components/forms/CancelButton';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 import colors from 'constants/colors';
+import Device from 'utils/Device';
+const isTablet = Device.isTablet();
 
 class ChangeEmailScreen extends Component {
   inputs = [];
@@ -78,11 +80,13 @@ class ChangeEmailScreen extends Component {
             loading={false}
             disabled={true}
           />
-          <CancelButton
-            onPress={_ => this.props.navigation.goBack()}
-            label="Cancel"
-            loading={false}
-          />
+          {!isTablet && (
+            <CancelButton
+              onPress={_ => this.props.navigation.goBack()}
+              label="Cancel"
+              loading={false}
+            />
+          )}
         </Form>
       </View>
     );
