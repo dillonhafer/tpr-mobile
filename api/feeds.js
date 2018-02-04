@@ -11,3 +11,9 @@ export function UnsubscribeFeedRequest(feedID) {
 export function SubscribeFeedRequest({ url }) {
   return _post('/api/subscriptions', { url });
 }
+
+export function ImportFeedRequest(formData) {
+  return _post('/api/feeds/import', formData, {
+    'Content-Type': 'multipart/form-data',
+  });
+}
