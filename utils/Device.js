@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import { Platform, Dimensions } from 'react-native';
 
 const msp = (dim, limit) => {
   return dim.scale * dim.width >= limit || dim.scale * dim.height >= limit;
@@ -15,6 +15,10 @@ const isLandscape = () => {
 };
 
 const isTablet = () => {
+  if (Platform.OS !== 'ios') {
+    return false;
+  }
+
   const dim = Dimensions.get('screen');
   return (
     (dim.scale < 2 && msp(dim, 1000)) || (dim.scale >= 2 && msp(dim, 1900))

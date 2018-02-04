@@ -1,12 +1,9 @@
 import React from 'react';
 import {
-  Image,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  Button,
   TouchableHighlight,
   View,
   RefreshControl,
@@ -92,7 +89,7 @@ export default class SettingsScreen extends React.Component {
       const exportURL = await GetExportURL();
       const resp = await FileSystem.downloadAsync(
         exportURL,
-        FileSystem.documentDirectory + 'tpr-opml.xml',
+        FileSystem.documentDirectory + 'tpr-opml-export.xml',
       );
       if (resp.status === 200) {
         if (Platform.OS === 'ios') {
