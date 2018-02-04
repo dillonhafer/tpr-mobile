@@ -27,6 +27,10 @@ import LoginTabNavigator from 'navigation/LoginTabNavigator';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 class LoginScreen extends Component {
+  state = {
+    checking: true,
+  };
+
   componentDidMount() {
     this.checkDomain();
     this.checkCurrentUser();
@@ -45,14 +49,21 @@ class LoginScreen extends Component {
         setTimeout(Keyboard.dismiss, 500);
         this.props.updateCurrentUser(user);
         this.props.screenProps.parentNavigation.navigate('Main');
+      } else {
+        this.setState({ checking: false });
       }
     } catch (err) {
       console.log(err);
+      this.setState({ checking: false });
     }
   };
 
   render() {
     const hasDomain = this.props.domain && this.props.domain.length > 0;
+
+    if (this.state.checking) {
+      return null;
+    }
 
     return (
       <View style={styles.container}>
