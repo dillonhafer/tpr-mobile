@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Platform,
+  View,
+} from 'react-native';
 
 // Redux
 import { connect } from 'react-redux';
@@ -11,6 +17,8 @@ import PrimaryButton from 'components/forms/PrimaryButton';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 import Label from 'components/forms/Label';
+import Device from 'utils/Device';
+const isTablet = Device.isTablet();
 
 class DomainSettings extends Component {
   state = {
@@ -45,34 +53,41 @@ class DomainSettings extends Component {
 
     return (
       <Form>
-        <Label align="center" label="Domain" />
-        <TextInputContainer>
-          <TextInput
-            autoFocus={true}
-            placeholder="tpr.example.com"
-            autoCapitalize={'none'}
-            underlineColorAndroid={'transparent'}
-            autoCorrect={false}
-            keyboardType="url"
-            onSubmitEditing={this.setDomain}
-            returnKeyType="done"
-            enablesReturnKeyAutomatically={true}
-            onChangeText={domain =>
-              this.setState({
-                domain: this.formatDomain(domain),
-              })}
+        <View style={styles.container}>
+          <Label align="center" label="Domain" />
+          <TextInputContainer>
+            <TextInput
+              placeholder="tpr.example.com"
+              autoCapitalize={'none'}
+              underlineColorAndroid={'transparent'}
+              autoCorrect={false}
+              keyboardType="url"
+              onSubmitEditing={this.setDomain}
+              returnKeyType="done"
+              enablesReturnKeyAutomatically={true}
+              onChangeText={domain =>
+                this.setState({
+                  domain: this.formatDomain(domain),
+                })}
+            />
+          </TextInputContainer>
+          <PrimaryButton
+            label="Set Domain"
+            onPress={this.setDomain}
+            loading={loading}
+            disabled={!valid}
           />
-        </TextInputContainer>
-        <PrimaryButton
-          label="Set Domain"
-          onPress={this.setDomain}
-          loading={loading}
-          disabled={!valid}
-        />
+        </View>
       </Form>
     );
   }
 }
+
+const styles = {
+  container: {
+    ...(isTablet ? { width: 300, alignSelf: 'center' } : {}),
+  },
+};
 
 export default connect(null, dispatch => ({
   updateDomain: domain => {
