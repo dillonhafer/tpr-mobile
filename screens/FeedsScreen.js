@@ -13,6 +13,7 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
+  Share,
 } from 'react-native';
 
 import {
@@ -22,7 +23,7 @@ import {
 } from 'api/feeds';
 import { WebBrowser } from 'expo';
 import colors from 'constants/colors';
-import { notice } from 'notify';
+import { notice, error } from 'notify';
 import { GetExportURL } from 'utils/authentication';
 import PrimaryButton from 'components/forms/PrimaryButton';
 import { FileSystem } from 'expo';
@@ -55,12 +56,22 @@ export default class SettingsScreen extends React.Component {
   };
 
   exportXML = async () => {
-    const exportURL = await GetExportURL();
-    await FileSystem.downloadAsync(
-      exportURL,
-      FileSystem.documentDirectory + 'tpr-opml.xml',
-    );
-    notice('Download Complete');
+    try {
+      const exportURL = await GetExportURL();
+      const resp = await FileSystem.downloadAsync(
+        exportURL,
+        FileSystem.documentDirectory + 'tpr-opml.xml',
+      );
+      if (resp.status === 200) {
+        Share.share({ title: 'Export OPML File', url: resp.uri });
+      } else {
+        error(
+          `${resp.status} Could not export. Your session may have expired.`,
+        );
+      }
+    } catch (err) {
+      error('Something went wrong');
+    }
   };
 
   confirmUnsubscribe = feedID => {
@@ -164,6 +175,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   renderHeader = () => {
+    const exportEnabled = Platform.OS === 'ios';
+
     return (
       <View style={styles.headerContainer}>
         <Form>
@@ -189,6 +202,17 @@ export default class SettingsScreen extends React.Component {
           <PrimaryButton
             onPress={this.handleSubscribe}
             label="Subscribe"
+            loading={false}
+          />
+        </Form>
+        <View style={{ height: 0.5, backgroundColor: colors.primary }} />
+        <Form>
+          <PrimaryButton
+            onPress={this.exportXML}
+            label={
+              exportEnabled ? 'Export OPML File' : 'Export OPML File (iOS only)'
+            }
+            disabled={!exportEnabled}
             loading={false}
           />
         </Form>
