@@ -6,7 +6,7 @@
     "privacy": "unlisted",
     "sdkVersion": "25.0.0",
     "platforms": ["ios", "android"],
-    "version": "1.2.0",
+    "version": "1.3.0",
     "githubUrl": "https://github.com/dillonhafer/tpr-mobile",
     "orientation": "portrait",
     "icon": "./app-store-assets/logo.png",
@@ -23,7 +23,7 @@
     },
     "android": {
       "package": "com.dillonhafer.tpr",
-      "versionCode": 3,
+      "versionCode": 4,
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.dillonhafer.tpr"
     },
     "assetBundlePatterns": [
