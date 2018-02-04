@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
   Image,
   Platform,
@@ -20,33 +20,17 @@ import colors from 'constants/colors';
 import { values } from 'lodash';
 import moment from 'moment';
 
-export default class ArchiveScreen extends React.Component {
-  state = {
-    refreshing: false,
-    items: [],
+class ArchiveItem extends PureComponent {
+  handleOnPress = async () => {
+    WebBrowser.openBrowserAsync(this.props.item.url);
   };
 
-  componentDidMount() {
-    this.getArchivedItems();
-  }
-
-  getArchivedItems = async () => {
-    const resp = await ArchivedItemsRequest();
-    if (resp && resp.ok) {
-      const items = values(resp);
-      this.setState({ items: items.slice(0, -1) });
-    }
-  };
-
-  handleOnPress = async item => {
-    WebBrowser.openBrowserAsync(item.url);
-  };
-
-  renderItem = ({ item }) => {
+  render() {
+    const { item } = this.props;
     return (
       <TouchableHighlight
         underlayColor={colors.background}
-        onPress={_ => this.handleOnPress(item)}
+        onPress={this.handleOnPress}
       >
         <View key={item.title} style={styles.itemRow}>
           <Text style={styles.title}>{item.title}</Text>
@@ -59,6 +43,37 @@ export default class ArchiveScreen extends React.Component {
         </View>
       </TouchableHighlight>
     );
+  }
+}
+
+export default class ArchiveScreen extends Component {
+  state = {
+    refreshing: false,
+    items: [],
+  };
+
+  componentDidMount() {
+    this.getArchivedItems();
+  }
+
+  getArchivedItems = async () => {
+    const resp = await ArchivedItemsRequest();
+    if (resp && resp.ok) {
+      const items = values(resp)
+        .slice(0, -1)
+        .slice(0, 100)
+        .map(item => {
+          return {
+            key: item.id,
+            ...item,
+          };
+        });
+      this.setState({ items });
+    }
+  };
+
+  renderItem = ({ item }) => {
+    return <ArchiveItem item={item} />;
   };
 
   renderSeparator = () => {
@@ -111,7 +126,6 @@ export default class ArchiveScreen extends React.Component {
         <FlatList
           contentInset={{ top: 22 }}
           contentOffset={{ y: -22 }}
-          ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
           refreshControl={
             <RefreshControl
@@ -122,7 +136,6 @@ export default class ArchiveScreen extends React.Component {
           }
           style={styles.list}
           data={items}
-          keyExtractor={i => i.id}
           ItemSeparatorComponent={this.renderSeparator}
           renderItem={this.renderItem}
         />

@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform, View, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
+import Device from 'utils/Device';
 
 import colors from 'constants/colors';
 
@@ -60,7 +61,7 @@ const MainTabTabNavigator = TabNavigator(
             name={iconName}
             size={28}
             style={{ marginBottom: -3 }}
-            color={focused ? colors.links : colors.background}
+            color={focused ? colors.tabIconSelected : colors.background}
           />
         );
       },
@@ -68,10 +69,11 @@ const MainTabTabNavigator = TabNavigator(
     tabBarComponent: TabBarBottom,
     swipeEnabled: false,
     tabBarOptions: {
-      activeTintColor: colors.links,
+      activeTintColor: colors.tabIconSelected,
       inactiveTintColor: colors.background,
       style: {
         backgroundColor: colors.primary,
+        ...(Device.isTablet() ? { height: 48 } : {}),
       },
     },
   },

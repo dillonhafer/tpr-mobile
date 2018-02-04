@@ -6,7 +6,7 @@ export default {
   background: '#e6feff',
   links: '#b27954',
   tabIconDefault: '#ccc',
-  tabIconSelected: tintColor,
+  tabIconSelected: '#b27954',
   tabBar: '#fefefe',
   errorBackground: 'red',
   errorText: '#fff',

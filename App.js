@@ -1,8 +1,16 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font } from 'expo';
+import { AppLoading, Asset, Font, ScreenOrientation } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
+import Device from 'utils/Device';
+
+// Allow iPads to use landscape
+if (Platform.OS === 'ios' && Device.isTablet()) {
+  ScreenOrientation.allow(ScreenOrientation.Orientation.ALL);
+} else {
+  ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT_UP);
+}
 
 // Redux
 import { createStore } from 'redux';
