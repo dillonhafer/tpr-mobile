@@ -20,13 +20,13 @@ import {
   AllFeedsRequest,
   SubscribeFeedRequest,
   UnsubscribeFeedRequest,
+  ImportFeedRequest,
 } from 'api/feeds';
-import { WebBrowser } from 'expo';
+import { WebBrowser, FileSystem, DocumentPicker } from 'expo';
 import colors from 'constants/colors';
 import { notice, error } from 'notify';
 import { GetExportURL } from 'utils/authentication';
 import PrimaryButton from 'components/forms/PrimaryButton';
-import { FileSystem } from 'expo';
 import { values } from 'lodash';
 import moment from 'moment';
 import Form from 'components/forms/Form';
@@ -40,6 +40,7 @@ export default class SettingsScreen extends React.Component {
     feeds: [],
     url: '',
     exportLoading: false,
+    importLoading: false,
   };
 
   inputs = [];
@@ -53,6 +54,32 @@ export default class SettingsScreen extends React.Component {
     if (resp && resp.ok) {
       const feeds = values(resp);
       this.setState({ feeds: feeds.slice(0, -1) });
+    }
+  };
+
+  importXML = async () => {
+    this.setState({ importLoading: true });
+    try {
+      const file = await DocumentPicker.getDocumentAsync({
+        type: 'application/xml',
+      });
+      if (file.type === 'success') {
+        let data = new FormData();
+        data.append('file', { uri: file.uri, name: file.name });
+        const resp = await ImportFeedRequest(data);
+        if (resp && resp.ok) {
+          this.getFeeds();
+          notice('Imported OPML');
+        } else {
+          throw 'api error';
+        }
+      } else {
+        throw file.type;
+      }
+    } catch (err) {
+      error('Something went wrong');
+    } finally {
+      this.setState({ importLoading: false });
     }
   };
 
@@ -179,8 +206,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   renderHeader = () => {
-    const { exportLoading } = this.state;
-    const exportEnabled = Platform.OS === 'ios';
+    const { exportLoading, importLoading } = this.state;
+    const ioEnabled = Platform.OS === 'ios';
 
     return (
       <View style={styles.headerContainer}>
@@ -213,11 +240,22 @@ export default class SettingsScreen extends React.Component {
         <View style={{ height: 0.5, backgroundColor: colors.primary }} />
         <Form>
           <PrimaryButton
+            onPress={this.importXML}
+            label={
+              ioEnabled ? 'Import OPML File' : 'Import OPML File (iOS only)'
+            }
+            disabled={!ioEnabled}
+            loading={importLoading}
+          />
+        </Form>
+        <View style={{ height: 0.5, backgroundColor: colors.primary }} />
+        <Form>
+          <PrimaryButton
             onPress={this.exportXML}
             label={
-              exportEnabled ? 'Export OPML File' : 'Export OPML File (iOS only)'
+              ioEnabled ? 'Export OPML File' : 'Export OPML File (iOS only)'
             }
-            disabled={!exportEnabled}
+            disabled={!ioEnabled}
             loading={exportLoading}
           />
         </Form>
