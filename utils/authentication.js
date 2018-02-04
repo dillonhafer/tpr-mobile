@@ -84,5 +84,5 @@ export async function GetExportURL() {
   const _baseURL = await GetDomain();
   const baseURL = `https://${_baseURL}`;
   const sessionToken = await GetAuthenticationToken();
-  return `${baseURL}/api/feeds.xml?=session=${sessionToken}`;
+  return `${baseURL}/api/feeds.xml?session=${sessionToken}`;
 }
