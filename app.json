@@ -16,6 +16,7 @@
       "backgroundColor": "#7ab0b2"
     },
     "ios": {
+      "usesIcloudStorage": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.dillonhafer.tpr",
       "appStoreUrl": "https://itunes.apple.com/us/app/the-pithy-reader/id1335273352?mt=8",
