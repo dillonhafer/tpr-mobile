@@ -24,9 +24,16 @@ import PrimaryButton from 'components/forms/PrimaryButton';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 
-import { SetAuthenticationToken, SetCurrentUser } from 'utils/authentication';
+import { Ionicons } from '@expo/vector-icons';
+import {
+  GetDomain,
+  SetAuthenticationToken,
+  SetCurrentUser,
+} from 'utils/authentication';
 import Device from 'utils/Device';
 const isTablet = Device.isTablet();
+
+import GenericPasswordExtension from 'react-native-generic-password-activity';
 
 class SignInScreen extends React.Component {
   static navigationOptions = {
@@ -39,6 +46,16 @@ class SignInScreen extends React.Component {
     name: '',
     password: '',
     loading: false,
+    domain: '',
+  };
+
+  componentDidMount() {
+    this.getDomain();
+  }
+
+  getDomain = async () => {
+    const domain = await GetDomain();
+    this.setState({ domain });
   };
 
   validateFields = () => {
@@ -49,7 +66,6 @@ class SignInScreen extends React.Component {
   signIn = async () => {
     const { name, password } = this.state;
     const resp = await SignInRequest({ name, password });
-    console.log(resp);
     if (resp && resp.ok) {
       SetAuthenticationToken(resp.sessionID);
       SetCurrentUser({ name: resp.name });
@@ -78,46 +94,90 @@ class SignInScreen extends React.Component {
     this.inputs[key].focus();
   }
 
+  handleValueFromPasswordExtension = (field, value) => {
+    this.setState({ [field]: value });
+    this.inputs[field].setNativeProps({
+      text: value,
+    });
+  };
+
+  getUsernameFromManager = name => {
+    this.handleValueFromPasswordExtension('name', name);
+  };
+
+  getPasswordFromManager = password => {
+    this.handleValueFromPasswordExtension('password', password);
+  };
+
   render() {
-    const { name, password, loading } = this.state;
+    const { domain, name, password, loading } = this.state;
     const valid = this.validateFields();
+
     return (
       <View style={styles.container}>
         <View style={styles.formContainer}>
           <Form>
             <TextInputContainer>
-              <TextInput
-                style={{ height: 50 }}
-                placeholder="User name"
-                autoCapitalize={'none'}
-                underlineColorAndroid={'transparent'}
-                autoCorrect={false}
-                ref={input => {
-                  this.inputs['name'] = input;
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}
-                onSubmitEditing={_ => {
-                  this.focusNextField('password');
-                }}
-                returnKeyType="next"
-                enablesReturnKeyAutomatically={true}
-                onChangeText={name => this.setState({ name })}
-              />
+              >
+                <TextInput
+                  style={{ height: 50, flex: 1 }}
+                  placeholder="User name"
+                  autoCapitalize={'none'}
+                  underlineColorAndroid={'transparent'}
+                  autoCorrect={false}
+                  ref={input => {
+                    this.inputs['name'] = input;
+                  }}
+                  onSubmitEditing={_ => {
+                    this.focusNextField('password');
+                  }}
+                  returnKeyType="next"
+                  enablesReturnKeyAutomatically={true}
+                  onChangeText={name => this.setState({ name })}
+                />
+                <GenericPasswordExtension
+                  type="username"
+                  domain={domain}
+                  onPress={this.getUsernameFromManager}
+                  color={colors.primary}
+                />
+              </View>
             </TextInputContainer>
             <TextInputContainer>
-              <TextInput
-                style={{ height: 50 }}
-                enablesReturnKeyAutomatically={true}
-                secureTextEntry={true}
-                autoCapitalize={'none'}
-                underlineColorAndroid={'transparent'}
-                ref={input => {
-                  this.inputs['password'] = input;
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}
-                placeholder="Password"
-                returnKeyType="done"
-                onSubmitEditing={this.handleOnPress}
-                onChangeText={password => this.setState({ password })}
-              />
+              >
+                <TextInput
+                  style={{ height: 50, flex: 1 }}
+                  enablesReturnKeyAutomatically={true}
+                  secureTextEntry={true}
+                  autoCapitalize={'none'}
+                  underlineColorAndroid={'transparent'}
+                  ref={input => {
+                    this.inputs['password'] = input;
+                  }}
+                  placeholder="Password"
+                  returnKeyType="done"
+                  onSubmitEditing={this.handleOnPress}
+                  onChangeText={password => this.setState({ password })}
+                />
+                <GenericPasswordExtension
+                  type="password"
+                  domain={domain}
+                  onPress={this.getPasswordFromManager}
+                  color={colors.primary}
+                />
+              </View>
             </TextInputContainer>
             <PrimaryButton
               label="Login"

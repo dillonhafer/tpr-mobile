@@ -3781,6 +3781,10 @@ react-native-drawer-layout@1.3.2:
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
 
+react-native-generic-password-activity@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-generic-password-activity/-/react-native-generic-password-activity-1.0.0.tgz#a65669b03f52f3853031f3a095c535889782e214"
+
 react-native-gesture-handler@1.0.0-alpha.39:
   version "1.0.0-alpha.39"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.39.tgz#e87851d5efc49d2d91ebf76ad59b7b5d1fd356f5"
