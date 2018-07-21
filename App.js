@@ -1,26 +1,26 @@
-import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, ScreenOrientation } from 'expo';
-import { Ionicons } from '@expo/vector-icons';
-import RootNavigation from './navigation/RootNavigation';
-import Device from 'utils/Device';
+import React from "react";
+import { Platform, StatusBar, StyleSheet, View } from "react-native";
+import { AppLoading, Asset, Font, ScreenOrientation } from "expo";
+import { Ionicons } from "@expo/vector-icons";
+import RootNavigation from "./navigation/RootNavigation";
+import Device from "utils/Device";
 
 // Allow iPads to use landscape
-if (Platform.OS === 'ios' && Device.isTablet()) {
+if (Platform.OS === "ios" && Device.isTablet()) {
   ScreenOrientation.allow(ScreenOrientation.Orientation.ALL);
 } else {
   ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT_UP);
 }
 
 // Redux
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import reducers from 'reducers';
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import reducers from "reducers";
 const store = createStore(reducers);
 
 export default class App extends React.Component {
   state = {
-    isLoadingComplete: false,
+    isLoadingComplete: false
   };
 
   render() {
@@ -35,8 +35,8 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
-          {Platform.OS === 'android' && (
+          {Platform.OS === "ios" && <StatusBar barStyle="light-content" />}
+          {Platform.OS === "android" && (
             <View style={styles.statusBarUnderlay} />
           )}
           <Provider key="app" store={store}>
@@ -49,11 +49,10 @@ export default class App extends React.Component {
 
   _loadResourcesAsync = async () => {
     return Promise.all([
-      Asset.loadAsync([require('images/book.png')]),
       Font.loadAsync({
         ...Ionicons.font,
-        Verdana: require('./assets/fonts/Verdana.ttf'),
-      }),
+        Verdana: require("./assets/fonts/Verdana.ttf")
+      })
     ]);
   };
 
@@ -71,10 +70,10 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#7ab0b2',
+    backgroundColor: "#7ab0b2"
   },
   statusBarUnderlay: {
     height: 24,
-    backgroundColor: 'rgba(0,0,0,0.2)',
-  },
+    backgroundColor: "rgba(0,0,0,0.2)"
+  }
 });
