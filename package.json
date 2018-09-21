@@ -16,10 +16,10 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^28.0.0",
+    "expo": "^30.0.0",
     "moment": "^2.20.1",
     "react": "16.3.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-28.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-generic-password-activity": "^1.0.0",
     "react-native-keyboard-aware-scroll-view": "^0.4.1",
     "react-navigation": "1.5.11",
@@ -31,7 +31,7 @@
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
-    "jest-expo": "^28.0.0",
+    "jest-expo": "^30.0.0",
     "react-native-scripts": "1.8.1",
     "react-test-renderer": "^16.3.0-alpha.1"
   }

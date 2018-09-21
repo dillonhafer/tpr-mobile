@@ -1,13 +1,12 @@
 {
   "expo": {
     "name": "tpr",
-    "description":
-      "A fast, simple, and lightweight feed aggregator and reader.",
+    "description": "A fast, simple, and lightweight feed aggregator and reader.",
     "slug": "tpr",
     "privacy": "unlisted",
-    "sdkVersion": "28.0.0",
+    "sdkVersion": "30.0.0",
     "platforms": ["ios", "android"],
-    "version": "1.4.0",
+    "version": "1.4.1",
     "githubUrl": "https://github.com/dillonhafer/tpr-mobile",
     "orientation": "portrait",
     "updates": {
@@ -20,21 +19,24 @@
       "backgroundColor": "#7ab0b2"
     },
     "ios": {
-      "buildNumber": "5",
+      "buildNumber": "6",
       "usesIcloudStorage": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.dillonhafer.tpr",
-      "appStoreUrl":
-        "https://itunes.apple.com/us/app/the-pithy-reader/id1335273352?mt=8",
+      "appStoreUrl": "https://itunes.apple.com/us/app/the-pithy-reader/id1335273352?mt=8",
       "config": {
         "usesNonExemptEncryption": false
       }
     },
     "android": {
+      "adaptiveIcon": {
+        "backgroundImage": "./app-store-assets/android-app-background.png",
+        "foregroundImage": "./app-store-assets/android-app-foreground.png"
+      },
       "package": "com.dillonhafer.tpr",
-      "versionCode": 5,
-      "playStoreUrl":
-        "https://play.google.com/store/apps/details?id=com.dillonhafer.tpr"
+      "versionCode": 6,
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.dillonhafer.tpr",
+      "permissions": []
     },
     "assetBundlePatterns": ["./assets/images/**", "./assets/fonts/**"]
   }
