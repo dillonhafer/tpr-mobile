@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "actions/*": ["actions/*"],
+      "api/*": ["api/*"],
+      "assets/*": ["assets/*"],
+      "components/*": ["components/*"],
+      "constants/*": ["constants/*"],
+      "images/*": ["images/*"],
+      "fonts/*": ["fonts/*"],
+      "navigation/*": ["navigation/*"],
+      "notify/*": ["notify/*"],
+      "reducers/*": ["reducers/*"],
+      "redux-constants/*": ["redux-constants/*"],
+      "screens/*": ["screens/*"],
+      "utils/*": ["utils/*"]
+    }
+  },
+  "exclude": ["../node_modules", "node_modules"]
+}

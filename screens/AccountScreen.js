@@ -1,44 +1,45 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent } from "react";
 import {
   Platform,
   View,
   Text,
   Alert,
   FlatList,
-  TouchableHighlight,
-} from 'react-native';
+  SafeAreaView,
+  TouchableHighlight
+} from "react-native";
 
 // Redux
-import { connect } from 'react-redux';
-import { updateCurrentUser } from 'actions/users';
+import { connect } from "react-redux";
+import { updateCurrentUser } from "actions/users";
 
 // Components
-import { Ionicons } from '@expo/vector-icons';
-import PrimaryButton from 'components/forms/PrimaryButton';
-import { notice } from 'notify';
-import colors from 'constants/colors';
+import { Ionicons } from "@expo/vector-icons";
+import PrimaryButton from "components/forms/PrimaryButton";
+import { notice } from "notify";
+import colors from "constants/colors";
 
-import { SignOutRequest } from 'api/sessions';
-import { GetAccountRequest } from 'api/users';
+import { SignOutRequest } from "api/sessions";
+import { GetAccountRequest } from "api/users";
 import {
   RemoveAuthentication,
-  GetAuthenticationToken,
-} from 'utils/authentication';
-import { Constants } from 'expo';
-import Device from 'utils/Device';
+  GetAuthenticationToken
+} from "utils/authentication";
+import { Constants } from "expo";
+import Device from "utils/Device";
 const isTablet = Device.isTablet();
 
-import ChangeEmailScreen from 'screens/ChangeEmailScreen';
-import ChangePasswordScreen from 'screens/ChangePasswordScreen';
+import ChangeEmailScreen from "screens/ChangeEmailScreen";
+import ChangePasswordScreen from "screens/ChangePasswordScreen";
 
 class AccountScreen extends PureComponent {
   state = {
     loading: false,
     user: {
-      name: '',
-      email: '',
+      name: "",
+      email: ""
     },
-    sideBar: '',
+    sideBar: ""
   };
 
   componentDidMount() {
@@ -51,28 +52,28 @@ class AccountScreen extends PureComponent {
       this.setState({
         user: {
           name: resp.name,
-          email: resp.email,
-        },
+          email: resp.email
+        }
       });
     }
   };
 
   confirmSignOut = () => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      "Logout",
+      "Are you sure you want to logout?",
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel"
         },
         {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: this.signOut,
-        },
+          text: "Logout",
+          style: "destructive",
+          onPress: this.signOut
+        }
       ],
-      { cancelable: true },
+      { cancelable: true }
     );
   };
 
@@ -82,19 +83,19 @@ class AccountScreen extends PureComponent {
       const sessionToken = await GetAuthenticationToken();
       await SignOutRequest(sessionToken);
       RemoveAuthentication();
-      this.props.updateCurrentUser({ name: '' });
-      notice('You are now logged out');
-      this.props.screenProps.parentNavigation.navigate('Login');
+      this.props.updateCurrentUser({ name: "" });
+      notice("You are now logged out");
+      this.setState({ loading: false });
+      this.props.screenProps.parentNavigation.navigate("Login");
     } catch (err) {
-      console.log('logout error', err);
-    } finally {
+      console.log("logout error", err);
       this.setState({ loading: false });
     }
   };
 
   renderHeader = () => {
     const { user } = this.state;
-    const iconName = Platform.OS === 'ios' ? 'ios-contact' : 'md-contact';
+    const iconName = Platform.OS === "ios" ? "ios-contact" : "md-contact";
     return (
       <View>
         <View style={styles.userContainer}>
@@ -138,12 +139,12 @@ class AccountScreen extends PureComponent {
 
   renderItem = ({ item }) => {
     const iconName =
-      Platform.OS === 'ios' ? 'ios-arrow-forward' : 'md-arrow-round-forward';
+      Platform.OS === "ios" ? "ios-arrow-forward" : "md-arrow-round-forward";
     return (
       <TouchableHighlight
         style={{
           backgroundColor:
-            this.state.sideBar === item.key ? colors.background : 'transparent',
+            this.state.sideBar === item.key ? colors.background : "transparent"
         }}
         underlayColor={colors.background}
         onPress={_ => this.handleOnPress(item.key)}
@@ -151,10 +152,10 @@ class AccountScreen extends PureComponent {
         <View key={item.title} style={styles.itemRow}>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingRight: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingRight: 10
             }}
           >
             <Text style={styles.itemText}>{item.key}</Text>
@@ -174,8 +175,8 @@ class AccountScreen extends PureComponent {
       <View
         style={{
           height: 1,
-          width: '100%',
-          backgroundColor: colors.primary,
+          width: "100%",
+          backgroundColor: colors.primary
         }}
       />
     );
@@ -186,10 +187,10 @@ class AccountScreen extends PureComponent {
       let SideComponent;
 
       switch (this.state.sideBar) {
-        case 'Change Password':
+        case "Change Password":
           SideComponent = <ChangePasswordScreen />;
           break;
-        case 'Change Email':
+        case "Change Email":
           SideComponent = <ChangeEmailScreen />;
           break;
         default:
@@ -205,13 +206,13 @@ class AccountScreen extends PureComponent {
   render() {
     const { loading, user } = this.state;
     const items = [
-      { key: 'Change Email' },
+      { key: "Change Email" },
       {
-        key: 'Change Password',
-      },
+        key: "Change Password"
+      }
     ];
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.mainContainer}>
           <FlatList
             contentInset={{ top: 42 }}
@@ -224,7 +225,7 @@ class AccountScreen extends PureComponent {
           />
         </View>
         {this.renderSideItem()}
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -232,60 +233,64 @@ class AccountScreen extends PureComponent {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    ...(isTablet ? { flexDirection: 'row' } : {}),
+    backgroundColor: "transparent",
+    ...(isTablet ? { flexDirection: "row" } : {})
   },
   mainContainer: {
     flex: 1,
-    ...(isTablet ? { maxWidth: '35%' } : {}),
+    backgroundColor: "#fff",
+    ...(isTablet ? { maxWidth: "35%" } : {})
   },
   sidebarContainer: {
     flex: 1,
-    backgroundColor: '#dedede',
+    backgroundColor: "#dedede",
     borderWidth: 0.5,
-    borderColor: 'transparent',
-    borderLeftColor: colors.primary,
+    borderColor: "transparent",
+    borderLeftColor: colors.primary
   },
   userContainer: {
     padding: 20,
-    paddingTop: 0,
+    paddingTop: 0
   },
   username: {
-    fontFamily: 'Verdana',
-    textAlign: 'center',
+    fontFamily: "Verdana",
+    textAlign: "center",
     color: colors.links,
-    fontSize: 22,
+    fontSize: 22
   },
   email: {
-    fontFamily: 'Verdana',
-    textAlign: 'center',
+    fontFamily: "Verdana",
+    textAlign: "center",
     color: colors.tabIconDefault,
-    fontSize: 14,
+    fontSize: 14
   },
   itemText: {
-    fontFamily: 'Verdana',
+    fontFamily: "Verdana",
     color: colors.links,
-    fontWeight: '700',
+    fontWeight: "700"
   },
   itemRow: {
-    padding: 10,
+    padding: 10
   },
   userIcon: {
     marginBottom: -3,
     fontSize: 68,
-    textAlign: 'center',
-    color: colors.primary,
+    textAlign: "center",
+    color: colors.primary
   },
   versionText: {
-    textAlign: 'center',
+    textAlign: "center",
     color: colors.links,
-    fontFamily: 'Verdana',
-    fontWeight: '700',
-  },
+    fontFamily: "Verdana",
+    fontWeight: "700"
+  }
 };
 
-export default connect(null, dispatch => ({
-  updateCurrentUser: user => {
-    dispatch(updateCurrentUser(user));
-  },
-}))(AccountScreen);
+export default connect(
+  null,
+  dispatch => ({
+    updateCurrentUser: user => {
+      dispatch(updateCurrentUser(user));
+    }
+  })
+)(AccountScreen);

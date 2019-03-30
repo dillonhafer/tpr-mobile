@@ -1,17 +1,11 @@
 import React, { Component, PureComponent } from "react";
 import {
-  Image,
-  Platform,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  Button,
   TouchableHighlight,
   View,
   RefreshControl,
-  FlatList,
-  Alert
+  FlatList
 } from "react-native";
 
 import { ArchivedItemsRequest } from "api/items";
@@ -126,6 +120,7 @@ export default class ArchiveScreen extends Component {
         <FlatList
           contentInset={{ top: 22 }}
           contentOffset={{ y: -22 }}
+          ListHeaderComponent={() => <View style={{ height: 30 }} />}
           ListFooterComponent={this.renderFooter}
           refreshControl={
             <RefreshControl

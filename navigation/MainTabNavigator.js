@@ -1,7 +1,10 @@
 import React from "react";
 import { Platform, View, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { TabNavigator, TabBarBottom } from "react-navigation";
+import {
+  createBottomTabNavigator as TabNavigator,
+  TabBarBottom
+} from "react-navigation";
 import Device from "utils/Device";
 
 import colors from "constants/colors";
@@ -27,40 +30,27 @@ const MainTabTabNavigator = TabNavigator(
     }
   },
   {
-    navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused }) => {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state;
         let iconName;
         switch (routeName) {
           case "Home":
-            iconName =
-              Platform.OS === "ios"
-                ? `ios-home${focused ? "" : "-outline"}`
-                : "md-home";
+            iconName = Platform.OS === "ios" ? `ios-home` : "md-home";
             break;
           case "Archive":
-            iconName =
-              Platform.OS === "ios"
-                ? `ios-archive${focused ? "" : "-outline"}`
-                : "md-archive";
+            iconName = Platform.OS === "ios" ? `ios-archive` : "md-archive";
             break;
           case "Feeds":
-            iconName =
-              Platform.OS === "ios"
-                ? `ios-albums${focused ? "" : "-outline"}`
-                : "md-albums";
+            iconName = Platform.OS === "ios" ? `ios-albums` : "md-albums";
             break;
           case "Account":
-            iconName =
-              Platform.OS === "ios"
-                ? `ios-contact${focused ? "" : "-outline"}`
-                : "md-contact";
+            iconName = Platform.OS === "ios" ? `ios-contact` : "md-contact";
         }
         return (
           <Ionicons
             name={iconName}
             size={28}
-            style={{ width: 28, textAlign: "center", marginBottom: -3 }}
             color={focused ? colors.tabIconSelected : colors.background}
           />
         );
@@ -80,10 +70,13 @@ const MainTabTabNavigator = TabNavigator(
 );
 
 export default class MainTabNavigator extends React.Component {
+  static router = MainTabTabNavigator.router;
+
   render() {
     StatusBar.setBarStyle("default");
     return (
       <MainTabTabNavigator
+        navigation={this.props.navigation}
         screenProps={{ parentNavigation: this.props.navigation }}
       />
     );

@@ -1,32 +1,39 @@
-import { Notifications } from 'expo';
-import React from 'react';
-import { StackNavigator } from 'react-navigation';
+import { Notifications } from "expo";
+import React from "react";
+import { createSwitchNavigator, createAppContainer } from "react-navigation";
 
-import MainTabNavigator from './MainTabNavigator';
-import LoginNavigator from './LoginNavigator';
-import registerForPushNotificationsAsync from 'api/registerForPushNotificationsAsync';
+import MainTabNavigator from "./MainTabNavigator";
+import LoginNavigator from "./LoginNavigator";
+import AccountNavigator from "./AccountNavigator";
+import registerForPushNotificationsAsync from "api/registerForPushNotificationsAsync";
 
-const RootStackNavigator = StackNavigator(
-  {
-    Login: {
-      screen: LoginNavigator,
-    },
-    Main: {
-      screen: MainTabNavigator,
-    },
-  },
-  {
-    headerMode: 'none',
-    navigationOptions: () => ({
-      gesturesEnabled: false,
-      headerTitleStyle: {
-        fontWeight: 'normal',
+const RootStackNavigator = createAppContainer(
+  createSwitchNavigator(
+    {
+      Login: {
+        screen: LoginNavigator
       },
-    }),
-  },
+      Main: {
+        screen: MainTabNavigator
+      },
+      Account: {
+        screen: AccountNavigator
+      }
+    },
+    {
+      navigationOptions: () => ({
+        gesturesEnabled: false,
+        headerTitleStyle: {
+          fontWeight: "normal"
+        }
+      })
+    }
+  )
 );
 
 export default class RootNavigator extends React.Component {
+  static router = RootStackNavigator.router;
+
   componentDidMount() {
     this._notificationSubscription = this._registerForPushNotifications();
   }
@@ -36,7 +43,7 @@ export default class RootNavigator extends React.Component {
   }
 
   render() {
-    return <RootStackNavigator />;
+    return <RootStackNavigator navigation={this.props.navigation} />;
   }
 
   _registerForPushNotifications() {
@@ -48,13 +55,13 @@ export default class RootNavigator extends React.Component {
 
     // Watch for incoming notifications
     this._notificationSubscription = Notifications.addListener(
-      this._handleNotification,
+      this._handleNotification
     );
   }
 
   _handleNotification = ({ origin, data }) => {
     console.log(
-      `Push notification ${origin} with data: ${JSON.stringify(data)}`,
+      `Push notification ${origin} with data: ${JSON.stringify(data)}`
     );
   };
 }

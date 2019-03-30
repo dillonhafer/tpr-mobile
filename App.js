@@ -4,18 +4,20 @@ import { AppLoading, Asset, Font, ScreenOrientation } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import RootNavigation from "./navigation/RootNavigation";
 import Device from "utils/Device";
+import { GetDomain, GetCurrentUser } from "utils/authentication";
 
 // Allow iPads to use landscape
 if (Platform.OS === "ios" && Device.isTablet()) {
-  ScreenOrientation.allow(ScreenOrientation.Orientation.ALL);
+  ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
 } else {
-  ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT_UP);
+  ScreenOrientation.allowAsync(ScreenOrientation.Orientation.PORTRAIT_UP);
 }
 
 // Redux
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import reducers from "reducers";
+
 const store = createStore(reducers);
 
 export default class App extends React.Component {
@@ -48,6 +50,19 @@ export default class App extends React.Component {
   }
 
   _loadResourcesAsync = async () => {
+    const domain = await GetDomain();
+    if (domain) {
+      store.dispatch({ type: "UPDATE_DOMAIN", domain });
+    }
+
+    const user = await GetCurrentUser();
+    if (user) {
+      store.dispatch({
+        type: "UPDATE_CURRENT_USER",
+        user
+      });
+    }
+
     return Promise.all([
       Font.loadAsync({
         ...Ionicons.font,

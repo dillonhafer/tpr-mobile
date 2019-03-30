@@ -10,6 +10,7 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
+  SafeAreaView,
   Share
 } from "react-native";
 
@@ -297,7 +298,7 @@ export default class SettingsScreen extends React.Component {
   renderPhone() {
     const { refreshing, feeds } = this.state;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.mainContainer}>
           <FlatList
             contentInset={{ top: 22 }}
@@ -317,7 +318,7 @@ export default class SettingsScreen extends React.Component {
             renderItem={this.renderItem}
           />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 

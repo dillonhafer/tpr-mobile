@@ -1,27 +1,27 @@
-import React from 'react';
-import { StackNavigator } from 'react-navigation';
-import AccountScreen from 'screens/AccountScreen';
-import ChangeEmailScreen from 'screens/ChangeEmailScreen';
-import ChangePasswordScreen from 'screens/ChangePasswordScreen';
+import React from "react";
+import { createStackNavigator as StackNavigator } from "react-navigation";
+import AccountScreen from "screens/AccountScreen";
+import ChangeEmailScreen from "screens/ChangeEmailScreen";
+import ChangePasswordScreen from "screens/ChangePasswordScreen";
 
 const AccountNavigator = StackNavigator(
   {
     Account: {
-      screen: AccountScreen,
+      screen: AccountScreen
     },
-    'Change Email': {
-      screen: ChangeEmailScreen,
+    "Change Email": {
+      screen: ChangeEmailScreen
     },
-    'Change Password': {
-      screen: ChangePasswordScreen,
-    },
+    "Change Password": {
+      screen: ChangePasswordScreen
+    }
   },
   {
-    headerMode: 'none',
+    headerMode: "none",
     navigationOptions: {
-      gesturesEnabled: true,
-    },
-  },
+      gesturesEnabled: true
+    }
+  }
 );
 
 export default AccountNavigator;
