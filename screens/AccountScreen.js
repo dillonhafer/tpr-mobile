@@ -233,7 +233,7 @@ class AccountScreen extends PureComponent {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: "transparent",
+    backgroundColor: "#7ab0b2",
     ...(isTablet ? { flexDirection: "row" } : {})
   },
   mainContainer: {

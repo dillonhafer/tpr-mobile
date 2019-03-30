@@ -5,6 +5,7 @@ import {
   TouchableHighlight,
   View,
   RefreshControl,
+  SafeAreaView,
   FlatList
 } from "react-native";
 
@@ -116,25 +117,24 @@ export default class ArchiveScreen extends Component {
   render() {
     const { refreshing, items } = this.state;
     return (
-      <View style={styles.container}>
-        <FlatList
-          contentInset={{ top: 22 }}
-          contentOffset={{ y: -22 }}
-          ListHeaderComponent={() => <View style={{ height: 30 }} />}
-          ListFooterComponent={this.renderFooter}
-          refreshControl={
-            <RefreshControl
-              tintColor={colors.primary}
-              refreshing={refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-          style={styles.list}
-          data={items}
-          ItemSeparatorComponent={this.renderSeparator}
-          renderItem={this.renderItem}
-        />
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <FlatList
+            ListFooterComponent={this.renderFooter}
+            refreshControl={
+              <RefreshControl
+                tintColor={colors.primary}
+                refreshing={refreshing}
+                onRefresh={this.onRefresh}
+              />
+            }
+            style={styles.list}
+            data={items}
+            ItemSeparatorComponent={this.renderSeparator}
+            renderItem={this.renderItem}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
 }

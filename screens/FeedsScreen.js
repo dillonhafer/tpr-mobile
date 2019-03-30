@@ -331,11 +331,11 @@ export default class SettingsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     ...(isTablet ? { flexDirection: "row" } : {})
   },
   mainContainer: {
     flex: 1,
+    backgroundColor: "#fff",
     ...(isTablet ? { maxWidth: "35%" } : {})
   },
   sidebarContainer: {

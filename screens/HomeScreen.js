@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   LayoutAnimation,
+  SafeAreaView,
   View,
   RefreshControl,
   FlatList,
@@ -60,19 +61,22 @@ export default class HomeScreen extends React.Component {
   };
 
   itemRefs = [];
+  container = null;
 
   showMarkSomeReadModal = index => {
     this.itemRefs[index].measure((fx, fy, width, height, px, py) => {
-      this.setState({
-        markReadModal: {
-          index,
-          aboveHeight: py,
-          belowHeight: 1000,
-          height,
-          visible: true
-        }
+      this.container.measure((_, __, ___, ____, _____, safeViewHeight) => {
+        this.setState({
+          markReadModal: {
+            index,
+            aboveHeight: py - safeViewHeight,
+            belowHeight: 1000,
+            height,
+            visible: true
+          }
+        });
+        LayoutAnimation.easeInEaseOut();
       });
-      LayoutAnimation.easeInEaseOut();
     });
   };
 
@@ -151,7 +155,7 @@ export default class HomeScreen extends React.Component {
     if (this.state.items.length > 0) {
       const { markAllReadLoading } = this.state;
       return (
-        <View style={{ padding: 20, paddingTop: 40, alignItems: "center" }}>
+        <View style={{ padding: 20, alignItems: "center" }}>
           <PrimaryButton
             loading={markAllReadLoading}
             label="Mark All Read"
@@ -211,115 +215,121 @@ export default class HomeScreen extends React.Component {
   render() {
     const { refreshing, items } = this.state;
     return (
-      <View style={styles.container}>
-        <FlatList
-          contentInset={{ top: 22 }}
-          contentOffset={{ y: -22 }}
-          ListHeaderComponent={this.renderHeader}
-          ListFooterComponent={this.renderFooter}
-          refreshControl={
-            <RefreshControl
-              tintColor={colors.primary}
-              refreshing={refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-          style={styles.list}
-          data={items}
-          keyExtractor={i => String(i.id)}
-          ItemSeparatorComponent={this.renderSeparator}
-          renderItem={this.renderItem}
-        />
-        {this.state.markReadModal.visible && (
-          <TouchableWithoutFeedback
-            onPress={() => {
-              this.setState({ markReadModal: { visible: false } });
-            }}
-          >
-            <View style={StyleSheet.absoluteFillObject}>
-              <View
-                style={{
-                  height: this.state.markReadModal.aboveHeight,
-                  backgroundColor: "#00000099",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "flex-end"
-                }}
-              >
-                <TouchableOpacity onPress={this.markAboveRead}>
-                  <View
-                    style={{
-                      backgroundColor: "#fff",
-                      borderRadius: 5,
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      marginBottom: 10,
-                      padding: 10,
-                      alignItems: "center"
-                    }}
-                  >
-                    <Ionicons
-                      color="#00000099"
-                      name="ios-arrow-dropup"
-                      size={20}
-                    />
-                    <Text
+      <SafeAreaView style={{ flex: 1 }}>
+        <View
+          ref={con => {
+            this.container = con;
+          }}
+          style={styles.container}
+        >
+          <FlatList
+            scrollEnabled={!this.state.markReadModal.visible}
+            ListHeaderComponent={this.renderHeader}
+            ListFooterComponent={this.renderFooter}
+            refreshControl={
+              <RefreshControl
+                tintColor={colors.primary}
+                refreshing={refreshing}
+                onRefresh={this.onRefresh}
+              />
+            }
+            style={styles.list}
+            data={items}
+            keyExtractor={i => String(i.id)}
+            ItemSeparatorComponent={this.renderSeparator}
+            renderItem={this.renderItem}
+          />
+          {this.state.markReadModal.visible && (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                this.setState({ markReadModal: { visible: false } });
+              }}
+            >
+              <View style={StyleSheet.absoluteFillObject}>
+                <View
+                  style={{
+                    height: this.state.markReadModal.aboveHeight,
+                    backgroundColor: "#00000099",
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "flex-end"
+                  }}
+                >
+                  <TouchableOpacity onPress={this.markAboveRead}>
+                    <View
                       style={{
-                        marginLeft: 10,
-                        fontWeight: "500",
-                        fontSize: 18,
-                        color: "#00000099"
+                        backgroundColor: "#fff",
+                        borderRadius: 5,
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        marginBottom: 10,
+                        padding: 10,
+                        alignItems: "center"
                       }}
                     >
-                      Mark All Above as Read
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View style={{ height: this.state.markReadModal.height }} />
-              <View
-                style={{
-                  flex: 1,
-                  height: this.state.markReadModal.belowHeight,
-                  backgroundColor: "#00000099",
-                  alignItems: "center",
-                  justifyContent: "flex-start"
-                }}
-              >
-                <TouchableOpacity onPress={this.markBelowRead}>
-                  <View
-                    style={{
-                      marginTop: 10,
-                      backgroundColor: "#fff",
-                      borderRadius: 5,
-                      padding: 10,
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
-                  >
-                    <Ionicons
-                      color="#00000099"
-                      name="ios-arrow-dropdown"
-                      size={20}
-                    />
-                    <Text
+                      <Ionicons
+                        color="#00000099"
+                        name="ios-arrow-dropup"
+                        size={20}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: 10,
+                          fontWeight: "500",
+                          fontSize: 18,
+                          color: "#00000099"
+                        }}
+                      >
+                        Mark All Above as Read
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={{ height: this.state.markReadModal.height }} />
+                <View
+                  style={{
+                    flex: 1,
+                    height: this.state.markReadModal.belowHeight,
+                    backgroundColor: "#00000099",
+                    alignItems: "center",
+                    justifyContent: "flex-start"
+                  }}
+                >
+                  <TouchableOpacity onPress={this.markBelowRead}>
+                    <View
                       style={{
-                        marginLeft: 10,
-                        fontWeight: "500",
-                        fontSize: 18,
-                        color: "#00000099"
+                        marginTop: 10,
+                        backgroundColor: "#fff",
+                        borderRadius: 5,
+                        padding: 10,
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center"
                       }}
                     >
-                      Mark All Below as Read
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                      <Ionicons
+                        color="#00000099"
+                        name="ios-arrow-dropdown"
+                        size={20}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: 10,
+                          fontWeight: "500",
+                          fontSize: 18,
+                          color: "#00000099"
+                        }}
+                      >
+                        Mark All Below as Read
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        )}
-      </View>
+            </TouchableWithoutFeedback>
+          )}
+        </View>
+      </SafeAreaView>
     );
   }
 }

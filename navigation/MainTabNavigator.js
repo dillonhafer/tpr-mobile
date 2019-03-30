@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, View, StatusBar } from "react-native";
+import { Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import {
   createBottomTabNavigator as TabNavigator,
@@ -73,7 +73,6 @@ export default class MainTabNavigator extends React.Component {
   static router = MainTabTabNavigator.router;
 
   render() {
-    StatusBar.setBarStyle("default");
     return (
       <MainTabTabNavigator
         navigation={this.props.navigation}
