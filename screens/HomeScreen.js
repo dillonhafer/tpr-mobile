@@ -1,19 +1,17 @@
 import React from "react";
 import {
-  Image,
-  Platform,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  Button,
-  TouchableHighlight,
+  LayoutAnimation,
   View,
   RefreshControl,
   FlatList,
-  Alert
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  TouchableHighlight
 } from "react-native";
 
+import { Ionicons } from "@expo/vector-icons";
 import {
   UnreadItemsRequest,
   MarkItemReadRequest,
@@ -30,7 +28,13 @@ export default class HomeScreen extends React.Component {
     refreshing: false,
     lastRefreshDate: moment(),
     markAllReadLoading: false,
-    items: []
+    items: [],
+    markReadModal: {
+      aboveHeight: 0,
+      belowHeight: 0,
+      rowHeight: 0,
+      visible: false
+    }
   };
 
   componentDidMount() {
@@ -55,11 +59,34 @@ export default class HomeScreen extends React.Component {
     MarkItemReadRequest(item.id);
   };
 
-  renderItem = ({ item }) => {
+  itemRefs = [];
+
+  showMarkSomeReadModal = index => {
+    this.itemRefs[index].measure((fx, fy, width, height, px, py) => {
+      this.setState({
+        markReadModal: {
+          index,
+          aboveHeight: py,
+          belowHeight: 1000,
+          height,
+          visible: true
+        }
+      });
+      LayoutAnimation.easeInEaseOut();
+    });
+  };
+
+  renderItem = ({ item, index }) => {
     return (
       <TouchableHighlight
+        ref={ref => {
+          this.itemRefs[index] = ref;
+        }}
         underlayColor={colors.background}
         onPress={_ => this.handleOnPress(item)}
+        onLongPress={() => {
+          this.showMarkSomeReadModal(index);
+        }}
       >
         <View key={item.title} style={styles.itemRow}>
           <Text style={styles.title}>{item.title}</Text>
@@ -78,6 +105,46 @@ export default class HomeScreen extends React.Component {
     const itemIDs = this.state.items.map(i => i.id);
     this.setState({ items: [] });
     MarkAllReadRequest({ itemIDs });
+  };
+
+  markAboveRead = () => {
+    const index = this.state.markReadModal.index;
+    const aboveIDs = this.state.items
+      .filter((i, idx) => idx < index)
+      .map(i => i.id);
+    MarkAllReadRequest({ itemIDs: aboveIDs });
+
+    const items = this.state.items.filter((i, idx) => idx >= index);
+    this.setState({
+      items,
+      markReadModal: {
+        index: -1,
+        height: 0,
+        aboveHeight: 0,
+        belowHeight: 0,
+        visible: false
+      }
+    });
+  };
+
+  markBelowRead = () => {
+    const index = this.state.markReadModal.index;
+    const belowIDs = this.state.items
+      .filter((i, idx) => idx > index)
+      .map(i => i.id);
+    MarkAllReadRequest({ itemIDs: belowIDs });
+
+    const items = this.state.items.filter((i, idx) => idx <= index);
+    this.setState({
+      items,
+      markReadModal: {
+        index: -1,
+        height: 0,
+        aboveHeight: 0,
+        belowHeight: 0,
+        visible: false
+      }
+    });
   };
 
   renderHeader = length => {
@@ -163,6 +230,95 @@ export default class HomeScreen extends React.Component {
           ItemSeparatorComponent={this.renderSeparator}
           renderItem={this.renderItem}
         />
+        {this.state.markReadModal.visible && (
+          <TouchableWithoutFeedback
+            onPress={() => {
+              this.setState({ markReadModal: { visible: false } });
+            }}
+          >
+            <View style={StyleSheet.absoluteFillObject}>
+              <View
+                style={{
+                  height: this.state.markReadModal.aboveHeight,
+                  backgroundColor: "#00000099",
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "flex-end"
+                }}
+              >
+                <TouchableOpacity onPress={this.markAboveRead}>
+                  <View
+                    style={{
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      marginBottom: 10,
+                      padding: 10,
+                      alignItems: "center"
+                    }}
+                  >
+                    <Ionicons
+                      color="#00000099"
+                      name="ios-arrow-dropup"
+                      size={20}
+                    />
+                    <Text
+                      style={{
+                        marginLeft: 10,
+                        fontWeight: "500",
+                        fontSize: 18,
+                        color: "#00000099"
+                      }}
+                    >
+                      Mark All Above as Read
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={{ height: this.state.markReadModal.height }} />
+              <View
+                style={{
+                  flex: 1,
+                  height: this.state.markReadModal.belowHeight,
+                  backgroundColor: "#00000099",
+                  alignItems: "center",
+                  justifyContent: "flex-start"
+                }}
+              >
+                <TouchableOpacity onPress={this.markBelowRead}>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                      padding: 10,
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Ionicons
+                      color="#00000099"
+                      name="ios-arrow-dropdown"
+                      size={20}
+                    />
+                    <Text
+                      style={{
+                        marginLeft: 10,
+                        fontWeight: "500",
+                        fontSize: 18,
+                        color: "#00000099"
+                      }}
+                    >
+                      Mark All Below as Read
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        )}
       </View>
     );
   }
