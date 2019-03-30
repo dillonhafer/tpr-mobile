@@ -10,7 +10,7 @@
     "githubUrl": "https://github.com/dillonhafer/tpr-mobile",
     "orientation": "portrait",
     "updates": {
-      "checkAutomatically": "ON_ERROR_RECOVERY"
+      "fallbackToCacheTimeout": 0
     },
     "icon": "./app-store-assets/logo.png",
     "splash": {
