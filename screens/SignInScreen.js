@@ -114,6 +114,7 @@ class SignInScreen extends React.Component {
                     this.focusNextField("password");
                   }}
                   returnKeyType="next"
+                  textContentType="username"
                   enablesReturnKeyAutomatically={true}
                   onChangeText={name => this.setState({ name })}
                 />
@@ -132,6 +133,7 @@ class SignInScreen extends React.Component {
                   enablesReturnKeyAutomatically={true}
                   secureTextEntry={true}
                   autoCapitalize={"none"}
+                  textContentType="password"
                   underlineColorAndroid={"transparent"}
                   ref={input => {
                     this.inputs["password"] = input;
