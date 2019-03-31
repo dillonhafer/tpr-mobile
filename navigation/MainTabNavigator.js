@@ -9,7 +9,7 @@ import Device from "utils/Device";
 
 import colors from "constants/colors";
 
-import HomeScreen from "screens/HomeScreen";
+import HomeScreen from "screens/Home";
 import ArchiveScreen from "screens/ArchiveScreen";
 import FeedsScreen from "screens/FeedsScreen";
 import AccountNavigator from "navigation/AccountNavigator";
