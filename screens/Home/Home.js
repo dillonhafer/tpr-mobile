@@ -86,7 +86,6 @@ export default class HomeScreen extends React.Component {
         }}
       >
         <ItemRow
-          onPress={this.handleOnPress}
           onLongPress={this.showMarkSomeReadModal}
           item={item}
           index={index}

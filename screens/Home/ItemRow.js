@@ -1,15 +1,18 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
 import colors from "constants/colors";
+import { WebBrowser } from "expo";
 import moment from "moment";
 
 class ItemRow extends Component {
   handleOnPress = () => {
-    this.props.onPress(this.props.item);
+    WebBrowser.openBrowserAsync(this.props.item.url);
   };
 
   handleOnLongPress = () => {
-    this.props.onLongPress(this.props.index);
+    if (this.props.onLongPress) {
+      this.props.onLongPress(this.props.index);
+    }
   };
 
   render() {

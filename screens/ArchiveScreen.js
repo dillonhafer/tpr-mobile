@@ -2,7 +2,6 @@ import React, { Component, PureComponent } from "react";
 import {
   StyleSheet,
   Text,
-  TouchableHighlight,
   View,
   RefreshControl,
   SafeAreaView,
@@ -10,36 +9,10 @@ import {
 } from "react-native";
 
 import { ArchivedItemsRequest } from "api/items";
-import { WebBrowser } from "expo";
 import colors from "constants/colors";
 import { values } from "lodash";
 import moment from "moment";
-
-class ArchiveItem extends PureComponent {
-  handleOnPress = async () => {
-    WebBrowser.openBrowserAsync(this.props.item.url);
-  };
-
-  render() {
-    const { item } = this.props;
-    return (
-      <TouchableHighlight
-        underlayColor={colors.background}
-        onPress={this.handleOnPress}
-      >
-        <View key={item.title} style={styles.itemRow}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.date}>
-            {moment(item.publication_time * 1000).format(
-              "MMMM Do, YYYY - h:mm a"
-            )}
-          </Text>
-          <Text style={styles.feed}>{item.feed_name}</Text>
-        </View>
-      </TouchableHighlight>
-    );
-  }
-}
+import ItemRow from "screens/Home/ItemRow";
 
 export default class ArchiveScreen extends Component {
   state = {
@@ -68,7 +41,7 @@ export default class ArchiveScreen extends Component {
   };
 
   renderItem = ({ item }) => {
-    return <ArchiveItem item={item} />;
+    return <ItemRow item={item} />;
   };
 
   renderSeparator = () => {
@@ -83,24 +56,20 @@ export default class ArchiveScreen extends Component {
     );
   };
 
-  renderFooter = () => {
-    if (this.state.items.length === 0) {
-      return (
-        <View style={{ padding: 30, marginTop: 30 }}>
-          <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Verdana",
-              color: colors.primary
-            }}
-          >
-            No archived items as of {moment().format("MMMM Do, YYYY, h:mm a")}.
-          </Text>
-        </View>
-      );
-    } else {
-      return null;
-    }
+  renderEmpty = () => {
+    return (
+      <View style={{ padding: 30, marginTop: 30 }}>
+        <Text
+          style={{
+            textAlign: "center",
+            fontFamily: "Verdana",
+            color: colors.primary
+          }}
+        >
+          No archived items as of {moment().format("MMMM Do, YYYY, h:mm a")}.
+        </Text>
+      </View>
+    );
   };
 
   onRefresh = async () => {
@@ -120,7 +89,7 @@ export default class ArchiveScreen extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <FlatList
-            ListFooterComponent={this.renderFooter}
+            ListEmptyComponent={this.renderFooter}
             refreshControl={
               <RefreshControl
                 tintColor={colors.primary}
