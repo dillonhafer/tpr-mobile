@@ -212,7 +212,7 @@ export default class SettingsScreen extends React.Component {
     const { exportLoading, importLoading } = this.state;
 
     return (
-      <View style={styles.headerContainer}>
+      <View>
         <Form>
           <TextInputContainer>
             <TextInput
@@ -261,84 +261,57 @@ export default class SettingsScreen extends React.Component {
     );
   };
 
-  renderTablet() {
+  renderFeedList = () => {
     const { refreshing, feeds } = this.state;
     return (
-      <SafeAreaView style={styles.container}>
-        <View key="main" style={styles.mainContainer}>
-          {this.renderFeedManager()}
-        </View>
-        <View key="side" style={styles.sidebarContainer}>
-          <FlatList
-            refreshControl={
-              <RefreshControl
-                tintColor={colors.primary}
-                refreshing={refreshing}
-                onRefresh={this.onRefresh}
-              />
-            }
-            style={styles.list}
-            data={feeds}
-            keyExtractor={i => String(i.feed_id)}
-            ItemSeparatorComponent={this.renderSeparator}
-            renderItem={this.renderItem}
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            tintColor={colors.primary}
+            refreshing={refreshing}
+            onRefresh={this.onRefresh}
           />
-        </View>
-      </SafeAreaView>
+        }
+        style={styles.list}
+        data={feeds}
+        keyExtractor={i => String(i.feed_id)}
+        ItemSeparatorComponent={this.renderSeparator}
+        renderItem={this.renderItem}
+      />
     );
-  }
-
-  renderPhone() {
-    const { refreshing, feeds } = this.state;
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.mainContainer}>
-          {this.renderFeedManager()}
-          <FlatList
-            showScrollIndicators={true}
-            refreshControl={
-              <RefreshControl
-                tintColor={colors.primary}
-                refreshing={refreshing}
-                onRefresh={this.onRefresh}
-              />
-            }
-            style={styles.list}
-            data={feeds}
-            keyExtractor={i => String(i.feed_id)}
-            ItemSeparatorComponent={this.renderSeparator}
-            renderItem={this.renderItem}
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
+  };
 
   render() {
-    const { refreshing, feeds } = this.state;
-    return isTablet ? this.renderTablet() : this.renderPhone();
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.mainContainer}>{this.renderFeedManager()}</View>
+        <View style={styles.feedListContainer}>{this.renderFeedList()}</View>
+      </SafeAreaView>
+    );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...(isTablet ? { flexDirection: "row" } : {})
+    flexDirection: isTablet ? "row" : "column"
   },
   mainContainer: {
+    backgroundColor: "#fff",
+    flex: isTablet ? 1 : -1,
+    maxWidth: isTablet ? "35%" : "100%"
+  },
+  feedListContainer: {
     flex: 1,
     backgroundColor: "#fff",
-    ...(isTablet ? { maxWidth: "35%" } : {})
+    ...(isTablet
+      ? {
+          borderWidth: 0.5,
+          borderColor: "transparent",
+          borderLeftColor: colors.primary
+        }
+      : {})
   },
-  sidebarContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderWidth: 0.5,
-    borderColor: "transparent",
-    borderLeftColor: colors.primary
-  },
-  contentContainer: {},
-  headerContainer: {},
   title: {
     fontFamily: "Verdana",
     color: colors.links,
