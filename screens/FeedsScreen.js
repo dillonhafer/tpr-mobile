@@ -74,8 +74,6 @@ export default class SettingsScreen extends React.Component {
         } else {
           throw "api error";
         }
-      } else {
-        throw file.type;
       }
     } catch (err) {
       error("Something went wrong");
@@ -138,11 +136,13 @@ export default class SettingsScreen extends React.Component {
   };
 
   handleSubscribe = async () => {
-    const resp = await SubscribeFeedRequest({ url: this.state.url });
-    if (resp && resp.ok) {
-      this.setState({ url: "" });
-      this.inputs["url"].clear();
-      this.getFeeds();
+    if (this.state.url.length) {
+      const resp = await SubscribeFeedRequest({ url: this.state.url });
+      if (resp && resp.ok) {
+        this.setState({ url: "" });
+        this.inputs["url"].clear();
+        this.getFeeds();
+      }
     }
   };
 
@@ -236,6 +236,7 @@ export default class SettingsScreen extends React.Component {
           </TextInputContainer>
           <PrimaryButton
             onPress={this.handleSubscribe}
+            disabled={!this.state.url.length}
             label="Subscribe"
             loading={false}
           />
@@ -300,10 +301,9 @@ export default class SettingsScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.mainContainer}>
+          {this.renderHeader()}
           <FlatList
-            contentInset={{ top: 22 }}
-            contentOffset={{ y: -22 }}
-            ListHeaderComponent={this.renderHeader}
+            showScrollIndicators={true}
             refreshControl={
               <RefreshControl
                 tintColor={colors.primary}
@@ -345,9 +345,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     borderLeftColor: colors.primary
   },
-  contentContainer: {
-    paddingTop: 30
-  },
+  contentContainer: {},
   headerContainer: {},
   title: {
     fontFamily: "Verdana",
