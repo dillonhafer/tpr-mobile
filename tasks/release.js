@@ -79,9 +79,9 @@ if (expoBuild("ios")) {
   // expoBuild('android', true);
 
   // Download IPA/Upload to iTunes
-  // Upload.createTmpDir();
-  // Upload.getDownloadUrl();
-  // Upload.download();
-  // Upload.validate();
-  // Upload.uploadTask();
+  Upload.createTmpDir();
+  Upload.getDownloadUrl();
+  Upload.download();
+  Upload.validate();
+  Upload.uploadTask();
 }
