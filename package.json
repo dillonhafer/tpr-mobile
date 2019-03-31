@@ -16,21 +16,24 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "eslint": "^5.16.0",
+    "eslint-plugin-react-native": "^3.6.0",
     "expo": "^32.0.0",
     "moment": "^2.20.1",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-keyboard-aware-scroll-view": "^0.4.1",
+    "react-native-swipeable": "^0.6.0",
     "react-navigation": "^3.5.1",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.6.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
     "jest-expo": "^32.0.0",
     "react-native-scripts": "^2.0.1",
     "react-test-renderer": "^16.3.0-alpha.1"
