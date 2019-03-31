@@ -122,7 +122,8 @@ class AccountScreen extends PureComponent {
         </View>
         <View style={styles.version}>
           <Text style={styles.versionText}>
-            Version {Constants.manifest.version}
+            Version {Constants.manifest.version} (
+            {Constants.manifest.ios.buildNumber})
           </Text>
         </View>
       </View>
