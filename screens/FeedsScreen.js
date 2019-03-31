@@ -208,7 +208,7 @@ export default class SettingsScreen extends React.Component {
     }
   };
 
-  renderHeader = () => {
+  renderFeedManager = () => {
     const { exportLoading, importLoading } = this.state;
 
     return (
@@ -264,20 +264,12 @@ export default class SettingsScreen extends React.Component {
   renderTablet() {
     const { refreshing, feeds } = this.state;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View key="main" style={styles.mainContainer}>
-          <FlatList
-            contentInset={{ top: 22 }}
-            contentOffset={{ y: -22 }}
-            ListHeaderComponent={this.renderHeader}
-            style={styles.list}
-            data={[]}
-          />
+          {this.renderFeedManager()}
         </View>
         <View key="side" style={styles.sidebarContainer}>
           <FlatList
-            contentInset={{ top: 22 }}
-            contentOffset={{ y: -22 }}
             refreshControl={
               <RefreshControl
                 tintColor={colors.primary}
@@ -292,7 +284,7 @@ export default class SettingsScreen extends React.Component {
             renderItem={this.renderItem}
           />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -301,7 +293,7 @@ export default class SettingsScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.mainContainer}>
-          {this.renderHeader()}
+          {this.renderFeedManager()}
           <FlatList
             showScrollIndicators={true}
             refreshControl={
