@@ -31,8 +31,11 @@ class ItemRow extends Component {
   };
 
   handleOnPress = () => {
-    this.swiper.recenter();
-    this.props.onPress(this.props.feed);
+    if (this.swiper.state.rightButtonsOpen) {
+      this.swiper.recenter();
+    } else {
+      this.props.onPress(this.props.feed);
+    }
   };
 
   render() {
