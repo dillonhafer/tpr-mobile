@@ -21,7 +21,6 @@
   "parser": "babel-eslint",
   "plugins": ["react", "react-native", "import"],
   "rules": {
-    "comma-dangle": ["only-multiline"],
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "linebreak-style": ["error", "unix"],
     "react/no-unescaped-entities": [0],
