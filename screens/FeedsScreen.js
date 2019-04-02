@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Platform,
   StyleSheet,
@@ -11,34 +11,38 @@ import {
   Alert,
   TouchableOpacity,
   SafeAreaView,
-  Share
-} from "react-native";
+  Share,
+} from 'react-native';
 
 import {
   AllFeedsRequest,
   SubscribeFeedRequest,
   UnsubscribeFeedRequest,
-  ImportFeedRequest
-} from "api/feeds";
-import { WebBrowser, FileSystem, DocumentPicker } from "expo";
-import colors from "constants/colors";
-import { notice, error } from "notify";
-import { GetExportURL } from "utils/authentication";
-import PrimaryButton from "components/forms/PrimaryButton";
-import { values } from "lodash";
-import moment from "moment";
-import Form from "components/forms/Form";
-import TextInputContainer from "components/forms/TextInputContainer";
-import Device from "utils/Device";
+  ImportFeedRequest,
+} from 'api/feeds';
+import { WebBrowser, FileSystem, DocumentPicker } from 'expo';
+import colors from 'constants/colors';
+import { notice, error } from 'notify';
+import { GetExportURL } from 'utils/authentication';
+import PrimaryButton from 'components/forms/PrimaryButton';
+import { values } from 'lodash';
+import moment from 'moment';
+import Form from 'components/forms/Form';
+import TextInputContainer from 'components/forms/TextInputContainer';
+import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 
 export default class SettingsScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Feeds',
+  };
+
   state = {
     refreshing: false,
     feeds: [],
-    url: "",
+    url: '',
     exportLoading: false,
-    importLoading: false
+    importLoading: false,
   };
 
   inputs = [];
@@ -58,25 +62,25 @@ export default class SettingsScreen extends React.Component {
   importXML = async () => {
     this.setState({ importLoading: true });
     try {
-      const type = Platform.OS === "ios" ? "application/xml" : "*/*";
+      const type = Platform.OS === 'ios' ? 'application/xml' : '*/*';
       const file = await DocumentPicker.getDocumentAsync({ type });
-      if (file.type === "success") {
+      if (file.type === 'success') {
         let data = new FormData();
-        data.append("file", {
+        data.append('file', {
           uri: file.uri,
           name: file.name,
-          type: "multipart/form-data"
+          type: 'multipart/form-data',
         });
         const resp = await ImportFeedRequest(data);
         if (resp && resp.ok) {
           this.getFeeds();
-          notice("Imported OPML");
+          notice('Imported OPML');
         } else {
-          throw "api error";
+          throw 'api error';
         }
       }
     } catch (err) {
-      error("Something went wrong");
+      error('Something went wrong');
     } finally {
       this.setState({ importLoading: false });
     }
@@ -88,19 +92,19 @@ export default class SettingsScreen extends React.Component {
       const exportURL = await GetExportURL();
       const resp = await FileSystem.downloadAsync(
         exportURL,
-        FileSystem.documentDirectory + "tpr-opml-export.xml"
+        FileSystem.documentDirectory + 'tpr-opml-export.xml',
       );
       if (resp.status === 200) {
-        if (Platform.OS === "ios") {
-          await Share.share({ title: "Export OPML File", url: resp.uri });
+        if (Platform.OS === 'ios') {
+          await Share.share({ title: 'Export OPML File', url: resp.uri });
         }
       } else {
         error(
-          `${resp.status} Could not export. Your session may have expired.`
+          `${resp.status} Could not export. Your session may have expired.`,
         );
       }
     } catch (err) {
-      error("Something went wrong");
+      error('Something went wrong');
     } finally {
       this.setState({ exportLoading: false });
     }
@@ -108,22 +112,22 @@ export default class SettingsScreen extends React.Component {
 
   confirmUnsubscribe = feedID => {
     Alert.alert(
-      "Unsubscribe",
-      "Are you sure you want to unsubscribe?",
+      'Unsubscribe',
+      'Are you sure you want to unsubscribe?',
       [
         {
-          text: "Cancel",
-          style: "cancel"
+          text: 'Cancel',
+          style: 'cancel',
         },
         {
-          text: "Unsubscribe",
-          style: "destructive",
+          text: 'Unsubscribe',
+          style: 'destructive',
           onPress: async () => {
             await this.handleUnsubscribe(feedID);
-          }
-        }
+          },
+        },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
@@ -139,15 +143,18 @@ export default class SettingsScreen extends React.Component {
     if (this.state.url.length) {
       const resp = await SubscribeFeedRequest({ url: this.state.url });
       if (resp && resp.ok) {
-        this.setState({ url: "" });
-        this.inputs["url"].clear();
+        this.setState({ url: '' });
+        this.inputs['url'].clear();
         this.getFeeds();
       }
     }
   };
 
-  handleOnPress = async feed => {
-    WebBrowser.openBrowserAsync(feed.url);
+  handleOnPress = feed => {
+    this.props.navigation.navigate('FeedScreen', {
+      feedName: feed.name,
+      feedID: feed.feed_id,
+    });
   };
 
   renderItem = ({ item: feed }) => {
@@ -165,7 +172,7 @@ export default class SettingsScreen extends React.Component {
               <Text style={styles.date}>
                 Last published
                 {moment(feed.last_publication_time * 1000).format(
-                  "MMMM Do, YYYY - h:mm a"
+                  'MMMM Do, YYYY - h:mm a',
                 )}
               </Text>
             )}
@@ -190,8 +197,8 @@ export default class SettingsScreen extends React.Component {
       <View
         style={{
           height: 1,
-          width: "100%",
-          backgroundColor: colors.primary
+          width: '100%',
+          backgroundColor: colors.primary,
         }}
       />
     );
@@ -217,19 +224,19 @@ export default class SettingsScreen extends React.Component {
           <TextInputContainer>
             <TextInput
               placeholder="Feed URL"
-              autoCapitalize={"none"}
-              underlineColorAndroid={"transparent"}
+              autoCapitalize={'none'}
+              underlineColorAndroid={'transparent'}
               autoCorrect={false}
               keyboardType="url"
               onSubmitEditing={this.handleSubscribe}
               ref={input => {
-                this.inputs["url"] = input;
+                this.inputs['url'] = input;
               }}
               returnKeyType="done"
               enablesReturnKeyAutomatically={true}
               onChangeText={url =>
                 this.setState({
-                  url
+                  url,
                 })
               }
             />
@@ -245,7 +252,7 @@ export default class SettingsScreen extends React.Component {
         <Form>
           <PrimaryButton
             onPress={this.importXML}
-            label={"Import OPML File"}
+            label={'Import OPML File'}
             loading={importLoading}
           />
         </Form>
@@ -253,7 +260,7 @@ export default class SettingsScreen extends React.Component {
         <Form>
           <PrimaryButton
             onPress={this.exportXML}
-            label={"Export OPML File"}
+            label={'Export OPML File'}
             loading={exportLoading}
           />
         </Form>
@@ -294,55 +301,56 @@ export default class SettingsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: isTablet ? "row" : "column"
+    backgroundColor: colors.primary,
+    flexDirection: isTablet ? 'row' : 'column',
   },
   mainContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     flex: isTablet ? 1 : -1,
-    maxWidth: isTablet ? "35%" : "100%"
+    maxWidth: isTablet ? '35%' : '100%',
   },
   feedListContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     ...(isTablet
       ? {
           borderWidth: 0.5,
-          borderColor: "transparent",
-          borderLeftColor: colors.primary
+          borderColor: 'transparent',
+          borderLeftColor: colors.primary,
         }
-      : {})
+      : {}),
   },
   title: {
-    fontFamily: "Verdana",
+    fontFamily: 'Verdana',
     color: colors.links,
-    fontWeight: "700"
+    fontWeight: '700',
   },
   itemRow: {
-    padding: 10
+    padding: 10,
   },
   date: {
-    fontFamily: "Verdana",
+    fontFamily: 'Verdana',
     color: colors.primary,
-    fontSize: 11
+    fontSize: 11,
   },
   feed: {
-    fontFamily: "Verdana",
+    fontFamily: 'Verdana',
     color: colors.primary,
-    fontSize: 11
+    fontSize: 11,
   },
   unsubscribeContainer: {
     paddingLeft: 10,
     paddingBottom: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   unsubscribe: {
-    fontFamily: "Verdana",
+    fontFamily: 'Verdana',
     color: colors.links,
-    fontSize: 11
+    fontSize: 11,
   },
   feedFailure: {
-    fontFamily: "Verdana",
+    fontFamily: 'Verdana',
     color: colors.errorBackground,
-    fontSize: 11
-  }
+    fontSize: 11,
+  },
 });
