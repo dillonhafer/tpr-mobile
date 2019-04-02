@@ -17,7 +17,7 @@ import {
 import { WebBrowser } from 'expo';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
-import { values } from 'lodash';
+import { values, orderBy } from 'lodash';
 import moment from 'moment';
 import MarkReadOverlay from 'components/MarkReadOverlay';
 import ItemRow from 'components/ItemRow';
@@ -47,7 +47,10 @@ export default class HomeScreen extends React.Component {
       if (resp.ok) {
         const items = values(resp);
         const lastRefreshDate = moment();
-        this.setState({ lastRefreshDate, items: items.slice(0, -1) });
+        this.setState({
+          lastRefreshDate,
+          items: orderBy(items.slice(0, -1), ['publication_time'], ['desc']),
+        });
       }
     });
   };
