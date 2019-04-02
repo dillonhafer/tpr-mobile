@@ -31,6 +31,7 @@ import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 import Device from 'utils/Device';
 const isTablet = Device.isTablet();
+import FeedItemRow from 'components/FeedItemRow';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -159,36 +160,11 @@ export default class SettingsScreen extends React.Component {
 
   renderItem = ({ item: feed }) => {
     return (
-      <View>
-        <TouchableHighlight
-          underlayColor={colors.background}
-          onPress={() => this.handleOnPress(feed)}
-        >
-          <View style={styles.itemRow}>
-            <Text style={styles.title}>
-              {feed.name} ({feed.item_count})
-            </Text>
-            {feed.last_publication_time && (
-              <Text style={styles.date}>
-                Last published
-                {moment(feed.last_publication_time * 1000).format(
-                  'MMMM Do, YYYY - h:mm a',
-                )}
-              </Text>
-            )}
-            {feed.last_failure && (
-              <Text style={styles.feedFailure}>{feed.last_failure}</Text>
-            )}
-          </View>
-        </TouchableHighlight>
-        <View style={styles.unsubscribeContainer}>
-          <TouchableOpacity
-            onPress={() => this.confirmUnsubscribe(feed.feed_id)}
-          >
-            <Text style={styles.unsubscribe}>Unsubscribe</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <FeedItemRow
+        onPress={this.handleOnPress}
+        feed={feed}
+        onUnsubscribe={this.confirmUnsubscribe}
+      />
     );
   };
 
