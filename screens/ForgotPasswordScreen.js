@@ -1,16 +1,5 @@
 import React from 'react';
-import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  Button,
-  TouchableOpacity,
-  View,
-  Alert,
-} from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 import ArrowButton from 'components/ArrowButton';
 import colors from 'constants/colors';
@@ -20,7 +9,7 @@ import TextInputContainer from 'components/forms/TextInputContainer';
 
 import { validEmail } from 'utils/helpers';
 import { RequestPasswordResetRequest } from 'api/users';
-import { notice } from 'notify';
+import { notice, error } from 'notify';
 import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 
@@ -102,7 +91,7 @@ export default class SignInScreen extends React.Component {
           <ArrowButton
             label="Login"
             direction="right"
-            onPress={_ => this.props.navigation.navigate('SignIn')}
+            onPress={() => this.props.navigation.navigate('SignIn')}
           />
         </View>
       </View>

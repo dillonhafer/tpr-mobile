@@ -1,55 +1,55 @@
-import React from "react";
+import React from 'react';
 import {
   Image,
   TouchableOpacity,
   Text,
   Platform,
   View,
-  StyleSheet
-} from "react-native";
-import { createSwitchNavigator } from "react-navigation";
-import colors from "constants/colors";
+  StyleSheet,
+} from 'react-native';
+import { createSwitchNavigator } from 'react-navigation';
+import colors from 'constants/colors';
 
-import ForgotPasswordScreen from "screens/ForgotPasswordScreen";
-import SignInScreen from "screens/SignInScreen";
-import RegisterScreen from "screens/RegisterScreen";
-import DomainSettings from "components/DomainSettings";
+import ForgotPasswordScreen from 'screens/ForgotPasswordScreen';
+import SignInScreen from 'screens/SignInScreen';
+import RegisterScreen from 'screens/RegisterScreen';
+import DomainSettings from 'components/DomainSettings';
 
-import logo from "images/book.png";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import logo from 'images/book.png';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { connect } from "react-redux";
-import { updateDomain } from "actions/appConfig";
-import { updateCurrentUser } from "actions/users";
+import { connect } from 'react-redux';
+import { updateDomain } from 'actions/appConfig';
+import { updateCurrentUser } from 'actions/users';
 
 const What = createSwitchNavigator(
   {
     DomainSetting: {
-      screen: DomainSettings
+      screen: DomainSettings,
     },
     ForgotPassword: {
-      screen: ForgotPasswordScreen
+      screen: ForgotPasswordScreen,
     },
     SignIn: {
-      screen: SignInScreen
+      screen: SignInScreen,
     },
     Register: {
-      screen: RegisterScreen
-    }
+      screen: RegisterScreen,
+    },
   },
   {
     animationEnabled: true,
     swipeEnabled: true,
     tabBarOptions: {
       labelStyle: {
-        fontSize: 1
+        fontSize: 1,
       },
       style: {
         opacity: 0,
-        height: 0
-      }
-    }
-  }
+        height: 0,
+      },
+    },
+  },
 );
 
 class TabNavigator extends React.Component {
@@ -57,29 +57,29 @@ class TabNavigator extends React.Component {
 
   componentDidMount() {
     if (this.props.domain.length > 0) {
-      this.props.navigation.navigate("SignIn");
+      this.props.navigation.navigate('SignIn');
     }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        {Platform.OS === "ios" && (
+        {Platform.OS === 'ios' && (
           <KeyboardAwareScrollView scrollEnabled={false}>
             <View style={styles.logoContainer}>
               <Image style={styles.logo} source={logo} />
               <Text style={styles.logoText}>The Pithy Reader</Text>
             </View>
             <TouchableOpacity
-              onPress={_ => {
-                this.props.navigation.navigate("DomainSetting");
+              onPress={() => {
+                this.props.navigation.navigate('DomainSetting');
               }}
             >
               <Text
                 style={{
-                  fontFamily: "Verdana",
+                  fontFamily: 'Verdana',
                   color: colors.background,
-                  textAlign: "center"
+                  textAlign: 'center',
                 }}
               >
                 {this.props.domain}
@@ -93,17 +93,17 @@ class TabNavigator extends React.Component {
           </KeyboardAwareScrollView>
         )}
 
-        {Platform.OS !== "ios" && [
+        {Platform.OS !== 'ios' && [
           <View key="1" style={styles.logoContainer}>
             <Image style={styles.logo} source={logo} />
             <Text style={styles.logoText}>The Pithy Reader</Text>
           </View>,
-          <TouchableOpacity key="1" onPress={_ => this.props.updateDomain("")}>
+          <TouchableOpacity key="1" onPress={() => this.props.updateDomain('')}>
             <Text
               style={{
-                fontFamily: "Verdana",
+                fontFamily: 'Verdana',
                 color: colors.background,
-                textAlign: "center"
+                textAlign: 'center',
               }}
             >
               {this.props.domain}
@@ -111,9 +111,10 @@ class TabNavigator extends React.Component {
           </TouchableOpacity>,
           <View key="3" style={{ height: 20 }} />,
           <What
+            key="whatnav2"
             navigation={this.props.navigation}
             screenProps={{ parentNavigation: this.props.navigation }}
-          />
+          />,
         ]}
       </View>
     );
@@ -123,23 +124,23 @@ class TabNavigator extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
   },
   logoContainer: {
-    alignItems: "center",
-    paddingTop: 40
+    alignItems: 'center',
+    paddingTop: 40,
   },
   logoText: {
-    fontFamily: "Verdana",
-    fontWeight: "700",
+    fontFamily: 'Verdana',
+    fontWeight: '700',
     color: colors.background,
-    fontSize: 22
+    fontSize: 22,
   },
   logo: {
     width: 100,
     height: 100,
-    resizeMode: "contain"
-  }
+    resizeMode: 'contain',
+  },
 });
 
 export default connect(
@@ -150,6 +151,6 @@ export default connect(
     },
     updateCurrentUser: user => {
       dispatch(updateCurrentUser(user));
-    }
-  })
+    },
+  }),
 )(TabNavigator);

@@ -1,34 +1,27 @@
-import React, { Component } from "react";
-import {
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  View
-} from "react-native";
+import React, { Component } from 'react';
+import { TextInput, View } from 'react-native';
 
 // Redux
-import { connect } from "react-redux";
-import { updateDomain } from "actions/appConfig";
+import { connect } from 'react-redux';
+import { updateDomain } from 'actions/appConfig';
 
-import colors from "constants/colors";
-import { SetDomain } from "utils/authentication";
-import PrimaryButton from "components/forms/PrimaryButton";
-import Form from "components/forms/Form";
-import TextInputContainer from "components/forms/TextInputContainer";
-import Label from "components/forms/Label";
-import Device from "utils/Device";
+import { SetDomain } from 'utils/authentication';
+import PrimaryButton from 'components/forms/PrimaryButton';
+import Form from 'components/forms/Form';
+import TextInputContainer from 'components/forms/TextInputContainer';
+import Label from 'components/forms/Label';
+import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 
 class DomainSettings extends Component {
   state = {
     loading: false,
     valid: false,
-    domain: ""
+    domain: '',
   };
 
   formatDomain(domain) {
-    return domain.replace(/^(https?:|)\/\//, "").trim();
+    return domain.replace(/^(https?:|)\/\//, '').trim();
   }
 
   validateFields = () => {
@@ -40,7 +33,7 @@ class DomainSettings extends Component {
       this.setState({ loading: true });
       SetDomain(this.state.domain);
       this.props.updateDomain(this.state.domain);
-      this.props.navigation.navigate("SignIn");
+      this.props.navigation.navigate('SignIn');
     } catch (err) {
       //
     } finally {
@@ -59,8 +52,8 @@ class DomainSettings extends Component {
           <TextInputContainer>
             <TextInput
               placeholder="tpr.example.com"
-              autoCapitalize={"none"}
-              underlineColorAndroid={"transparent"}
+              autoCapitalize={'none'}
+              underlineColorAndroid={'transparent'}
               autoCorrect={false}
               keyboardType="url"
               onSubmitEditing={this.setDomain}
@@ -68,7 +61,7 @@ class DomainSettings extends Component {
               enablesReturnKeyAutomatically={true}
               onChangeText={domain =>
                 this.setState({
-                  domain: this.formatDomain(domain)
+                  domain: this.formatDomain(domain),
                 })
               }
             />
@@ -87,8 +80,8 @@ class DomainSettings extends Component {
 
 const styles = {
   container: {
-    ...(isTablet ? { width: 300, alignSelf: "center" } : {})
-  }
+    ...(isTablet ? { width: 300, alignSelf: 'center' } : {}),
+  },
 };
 
 export default connect(
@@ -96,6 +89,6 @@ export default connect(
   dispatch => ({
     updateDomain: domain => {
       dispatch(updateDomain(domain));
-    }
-  })
+    },
+  }),
 )(DomainSettings);

@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
   Text,
   TouchableWithoutFeedback,
-  View
-} from "react-native";
+  View,
+} from 'react-native';
 
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons';
 
 const MarkReadOverlay = ({
   onAbovePress,
@@ -15,7 +15,7 @@ const MarkReadOverlay = ({
   hide,
   aboveHeight,
   belowHeight,
-  itemHeight
+  itemHeight,
 }) => {
   return (
     <TouchableWithoutFeedback onPress={hide}>
@@ -23,10 +23,10 @@ const MarkReadOverlay = ({
         <View
           style={{
             height: aboveHeight,
-            backgroundColor: "#00000099",
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "flex-end"
+            backgroundColor: '#00000099',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
           }}
         >
           <TouchableOpacity onPress={onAbovePress}>
@@ -41,9 +41,9 @@ const MarkReadOverlay = ({
           style={{
             flex: 1,
             height: belowHeight,
-            backgroundColor: "#00000099",
-            alignItems: "center",
-            justifyContent: "flex-start"
+            backgroundColor: '#00000099',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
           }}
         >
           <TouchableOpacity onPress={onBelowPress}>
@@ -61,19 +61,19 @@ const MarkReadOverlay = ({
 const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 5,
     padding: 10,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     marginLeft: 10,
-    fontWeight: "500",
+    fontWeight: '500',
     fontSize: 18,
-    color: "#00000099"
-  }
+    color: '#00000099',
+  },
 });
 
 // with React 16.6

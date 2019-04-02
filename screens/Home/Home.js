@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,21 +6,21 @@ import {
   SafeAreaView,
   View,
   RefreshControl,
-  FlatList
-} from "react-native";
+  FlatList,
+} from 'react-native';
 
 import {
   UnreadItemsRequest,
   MarkItemReadRequest,
-  MarkAllReadRequest
-} from "api/items";
-import { WebBrowser } from "expo";
-import colors from "constants/colors";
-import PrimaryButton from "components/forms/PrimaryButton";
-import { values } from "lodash";
-import moment from "moment";
-import MarkReadOverlay from "./MarkReadOverlay";
-import ItemRow from "./ItemRow";
+  MarkAllReadRequest,
+} from 'api/items';
+import { WebBrowser } from 'expo';
+import colors from 'constants/colors';
+import PrimaryButton from 'components/forms/PrimaryButton';
+import { values } from 'lodash';
+import moment from 'moment';
+import MarkReadOverlay from 'components/MarkReadOverlay';
+import ItemRow from 'components/ItemRow';
 
 export default class HomeScreen extends React.Component {
   itemRefs = [];
@@ -34,8 +34,8 @@ export default class HomeScreen extends React.Component {
       aboveHeight: 0,
       belowHeight: 0,
       rowHeight: 0,
-      visible: false
-    }
+      visible: false,
+    },
   };
 
   componentDidMount() {
@@ -43,7 +43,7 @@ export default class HomeScreen extends React.Component {
   }
 
   getUnreadItems = () => {
-    UnreadItemsRequest().then(resp => {
+    return UnreadItemsRequest().then(resp => {
       if (resp.ok) {
         const items = values(resp);
         const lastRefreshDate = moment();
@@ -70,8 +70,8 @@ export default class HomeScreen extends React.Component {
             aboveHeight: py - safeViewHeight,
             belowHeight: 1000,
             height,
-            visible: true
-          }
+            visible: true,
+          },
         });
         LayoutAnimation.easeInEaseOut();
       });
@@ -115,8 +115,8 @@ export default class HomeScreen extends React.Component {
         height: 0,
         aboveHeight: 0,
         belowHeight: 0,
-        visible: false
-      }
+        visible: false,
+      },
     });
   };
 
@@ -135,8 +135,8 @@ export default class HomeScreen extends React.Component {
         height: 0,
         aboveHeight: 0,
         belowHeight: 0,
-        visible: false
-      }
+        visible: false,
+      },
     });
   };
 
@@ -144,7 +144,7 @@ export default class HomeScreen extends React.Component {
     if (this.state.items.length > 0) {
       const { markAllReadLoading } = this.state;
       return (
-        <View style={{ padding: 20, alignItems: "center" }}>
+        <View style={{ padding: 20, alignItems: 'center' }}>
           <PrimaryButton
             loading={markAllReadLoading}
             label="Mark All Read"
@@ -162,8 +162,8 @@ export default class HomeScreen extends React.Component {
       <View
         style={{
           height: 1,
-          width: "100%",
-          backgroundColor: colors.primary
+          width: '100%',
+          backgroundColor: colors.primary,
         }}
       />
     );
@@ -174,13 +174,13 @@ export default class HomeScreen extends React.Component {
       <View style={{ padding: 30, marginTop: 30 }}>
         <Text
           style={{
-            textAlign: "center",
-            fontFamily: "Verdana",
-            color: colors.primary
+            textAlign: 'center',
+            fontFamily: 'Verdana',
+            color: colors.primary,
           }}
         >
-          No unread items as of{" "}
-          {this.state.lastRefreshDate.format("MMMM Do, YYYY, h:mm a")}.
+          No unread items as of{' '}
+          {this.state.lastRefreshDate.format('MMMM Do, YYYY, h:mm a')}.
         </Text>
       </View>
     );
@@ -188,13 +188,13 @@ export default class HomeScreen extends React.Component {
 
   onRefresh = async () => {
     this.setState({ refreshing: true });
-    try {
-      await this.getUnreadItems();
-    } catch (err) {
-      console.log(err);
-    } finally {
-      this.setState({ refreshing: false });
-    }
+    this.getUnreadItems()
+      .then(() => {
+        this.setState({ refreshing: false });
+      })
+      .catch(() => {
+        this.setState({ refreshing: false });
+      });
   };
 
   render() {
@@ -246,6 +246,6 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
-  }
+    backgroundColor: '#fff',
+  },
 });

@@ -19,8 +19,8 @@ import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
 import { values } from 'lodash';
 import moment from 'moment';
-import MarkReadOverlay from './MarkReadOverlay';
-import ItemRow from './ItemRow';
+import MarkReadOverlay from 'components/MarkReadOverlay';
+import ItemRow from 'components/ItemRow';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -53,7 +53,7 @@ export default class HomeScreen extends React.Component {
   }
 
   getUnreadItems = () => {
-    UnreadItemsRequest().then(resp => {
+    return UnreadItemsRequest().then(resp => {
       if (resp.ok) {
         const feedID = this.props.navigation.getParam('feedID', -1);
         const items = values(resp);
@@ -202,13 +202,13 @@ export default class HomeScreen extends React.Component {
 
   onRefresh = async () => {
     this.setState({ refreshing: true });
-    try {
-      await this.getUnreadItems();
-    } catch (err) {
-      console.log(err);
-    } finally {
-      this.setState({ refreshing: false });
-    }
+    this.getUnreadItems()
+      .then(() => {
+        this.setState({ refreshing: false });
+      })
+      .catch(() => {
+        this.setState({ refreshing: false });
+      });
   };
 
   render() {

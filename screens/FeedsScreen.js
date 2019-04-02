@@ -20,7 +20,7 @@ import {
   UnsubscribeFeedRequest,
   ImportFeedRequest,
 } from 'api/feeds';
-import { WebBrowser, FileSystem, DocumentPicker } from 'expo';
+import { FileSystem, DocumentPicker } from 'expo';
 import colors from 'constants/colors';
 import { notice, error } from 'notify';
 import { GetExportURL } from 'utils/authentication';
@@ -162,7 +162,7 @@ export default class SettingsScreen extends React.Component {
       <View>
         <TouchableHighlight
           underlayColor={colors.background}
-          onPress={_ => this.handleOnPress(feed)}
+          onPress={() => this.handleOnPress(feed)}
         >
           <View style={styles.itemRow}>
             <Text style={styles.title}>
@@ -183,7 +183,7 @@ export default class SettingsScreen extends React.Component {
         </TouchableHighlight>
         <View style={styles.unsubscribeContainer}>
           <TouchableOpacity
-            onPress={_ => this.confirmUnsubscribe(feed.feed_id)}
+            onPress={() => this.confirmUnsubscribe(feed.feed_id)}
           >
             <Text style={styles.unsubscribe}>Unsubscribe</Text>
           </TouchableOpacity>
@@ -206,13 +206,13 @@ export default class SettingsScreen extends React.Component {
 
   onRefresh = async () => {
     this.setState({ refreshing: true });
-    try {
-      await this.getFeeds();
-    } catch (err) {
-      console.log(err);
-    } finally {
-      this.setState({ refreshing: false });
-    }
+    this.getFeeds()
+      .then(() => {
+        this.setState({ refreshing: false });
+      })
+      .catch(() => {
+        this.setState({ refreshing: false });
+      });
   };
 
   renderFeedManager = () => {
@@ -314,10 +314,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     ...(isTablet
       ? {
-          borderWidth: 0.5,
-          borderColor: 'transparent',
-          borderLeftColor: colors.primary,
-        }
+          borderWidth: 0.5, // eslint-disable-line
+          borderColor: 'transparent', // eslint-disable-line
+          borderLeftColor: colors.primary, // eslint-disable-line
+        } // eslint-disable-line
       : {}),
   },
   title: {
@@ -329,11 +329,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   date: {
-    fontFamily: 'Verdana',
-    color: colors.primary,
-    fontSize: 11,
-  },
-  feed: {
     fontFamily: 'Verdana',
     color: colors.primary,
     fontSize: 11,

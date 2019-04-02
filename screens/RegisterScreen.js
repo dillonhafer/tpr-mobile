@@ -1,19 +1,8 @@
 import React from 'react';
-import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  Button,
-  TouchableOpacity,
-  View,
-  Alert,
-} from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 import { RegisterRequest } from 'api/users';
-import { notice } from 'notify';
+import { notice, error } from 'notify';
 import ArrowButton from 'components/ArrowButton';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
@@ -92,7 +81,7 @@ export default class SignInScreen extends React.Component {
   }
 
   render() {
-    const { username, email, password, loading } = this.state;
+    const { loading } = this.state;
     const valid = this.validateFields();
     return (
       <View style={styles.container}>
@@ -108,7 +97,7 @@ export default class SignInScreen extends React.Component {
                 ref={input => {
                   this.inputs['username'] = input;
                 }}
-                onSubmitEditing={_ => {
+                onSubmitEditing={() => {
                   this.focusNextField('email');
                 }}
                 returnKeyType="next"
@@ -127,7 +116,7 @@ export default class SignInScreen extends React.Component {
                 ref={input => {
                   this.inputs['email'] = input;
                 }}
-                onSubmitEditing={_ => {
+                onSubmitEditing={() => {
                   this.focusNextField('password');
                 }}
                 returnKeyType="next"
@@ -145,7 +134,7 @@ export default class SignInScreen extends React.Component {
                 ref={input => {
                   this.inputs['password'] = input;
                 }}
-                onSubmitEditing={_ => {
+                onSubmitEditing={() => {
                   this.focusNextField('passwordConfirmation');
                 }}
                 placeholder="Password"
@@ -167,7 +156,8 @@ export default class SignInScreen extends React.Component {
                 returnKeyType="done"
                 onSubmitEditing={this.handleOnPress}
                 onChangeText={passwordConfirmation =>
-                  this.setState({ passwordConfirmation })}
+                  this.setState({ passwordConfirmation })
+                }
               />
             </TextInputContainer>
             <PrimaryButton
@@ -180,7 +170,7 @@ export default class SignInScreen extends React.Component {
         </View>
         <View style={styles.buttonContainer}>
           <ArrowButton
-            onPress={_ => this.props.navigation.navigate('SignIn')}
+            onPress={() => this.props.navigation.navigate('SignIn')}
             direction="left"
             label="Login"
           />

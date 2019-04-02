@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import {
   LayoutAnimation,
   ActivityIndicator,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -10,7 +9,7 @@ import {
 import colors from 'constants/colors';
 
 class PrimaryButton extends PureComponent {
-  componentWillUpdate() {
+  UNSAFE__componentWillUpdate() {
     LayoutAnimation.easeInEaseOut();
   }
 

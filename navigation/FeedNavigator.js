@@ -1,4 +1,3 @@
-import React from 'react';
 import { createStackNavigator as StackNavigator } from 'react-navigation';
 
 import FeedsScreen from 'screens/FeedsScreen';

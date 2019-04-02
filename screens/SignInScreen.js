@@ -1,34 +1,34 @@
-import React from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import React from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 // Redux
-import { connect } from "react-redux";
-import { updateCurrentUser } from "actions/users";
-import { SignInRequest } from "api/sessions";
+import { connect } from 'react-redux';
+import { updateCurrentUser } from 'actions/users';
+import { SignInRequest } from 'api/sessions';
 
-import { notice } from "notify";
-import colors from "constants/colors";
-import ArrowButton from "components/ArrowButton";
-import PrimaryButton from "components/forms/PrimaryButton";
-import Form from "components/forms/Form";
-import TextInputContainer from "components/forms/TextInputContainer";
+import { notice, error } from 'notify';
+import colors from 'constants/colors';
+import ArrowButton from 'components/ArrowButton';
+import PrimaryButton from 'components/forms/PrimaryButton';
+import Form from 'components/forms/Form';
+import TextInputContainer from 'components/forms/TextInputContainer';
 
-import { SetAuthenticationToken, SetCurrentUser } from "utils/authentication";
-import Device from "utils/Device";
+import { SetAuthenticationToken, SetCurrentUser } from 'utils/authentication';
+import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 
 class SignInScreen extends React.Component {
   inputs = [];
 
   state = {
-    name: "",
-    password: "",
-    loading: false
+    name: '',
+    password: '',
+    loading: false,
   };
 
   componentDidMount() {
     if (this.props.users.currentUser.name.length > 0) {
-      this.props.navigation.navigate("Main");
+      this.props.navigation.navigate('Main');
     }
   }
 
@@ -44,9 +44,9 @@ class SignInScreen extends React.Component {
       SetAuthenticationToken(resp.sessionID);
       SetCurrentUser({ name: resp.name });
       this.props.updateCurrentUser({ name: resp.name });
-      notice("You are now signed in!");
+      notice('You are now signed in!');
       this.setState({ loading: true });
-      this.props.screenProps.parentNavigation.navigate("Main");
+      this.props.screenProps.parentNavigation.navigate('Main');
     } else {
       this.setState({ loading: true });
     }
@@ -58,11 +58,10 @@ class SignInScreen extends React.Component {
       if (this.validateFields()) {
         await this.signIn();
       } else {
-        error("Name/Password are invalid");
+        error('Name/Password are invalid');
       }
     } catch (err) {
       this.setState({ loading: false });
-      console.log(err);
     }
   };
 
@@ -73,20 +72,20 @@ class SignInScreen extends React.Component {
   handleValueFromPasswordExtension = (field, value) => {
     this.setState({ [field]: value });
     this.inputs[field].setNativeProps({
-      text: value
+      text: value,
     });
   };
 
   getUsernameFromManager = name => {
-    this.handleValueFromPasswordExtension("name", name);
+    this.handleValueFromPasswordExtension('name', name);
   };
 
   getPasswordFromManager = password => {
-    this.handleValueFromPasswordExtension("password", password);
+    this.handleValueFromPasswordExtension('password', password);
   };
 
   render() {
-    const { domain, name, password, loading } = this.state;
+    const { loading } = this.state;
     const valid = this.validateFields();
 
     return (
@@ -96,22 +95,22 @@ class SignInScreen extends React.Component {
             <TextInputContainer>
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between"
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}
               >
                 <TextInput
                   style={{ height: 50, flex: 1 }}
                   placeholder="User name"
-                  autoCapitalize={"none"}
-                  underlineColorAndroid={"transparent"}
+                  autoCapitalize={'none'}
+                  underlineColorAndroid={'transparent'}
                   autoCorrect={false}
                   ref={input => {
-                    this.inputs["name"] = input;
+                    this.inputs['name'] = input;
                   }}
-                  onSubmitEditing={_ => {
-                    this.focusNextField("password");
+                  onSubmitEditing={() => {
+                    this.focusNextField('password');
                   }}
                   returnKeyType="next"
                   textContentType="username"
@@ -123,20 +122,20 @@ class SignInScreen extends React.Component {
             <TextInputContainer>
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between"
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}
               >
                 <TextInput
                   style={{ height: 50, flex: 1 }}
                   enablesReturnKeyAutomatically={true}
                   secureTextEntry={true}
-                  autoCapitalize={"none"}
+                  autoCapitalize={'none'}
                   textContentType="password"
-                  underlineColorAndroid={"transparent"}
+                  underlineColorAndroid={'transparent'}
                   ref={input => {
-                    this.inputs["password"] = input;
+                    this.inputs['password'] = input;
                   }}
                   placeholder="Password"
                   returnKeyType="done"
@@ -156,12 +155,12 @@ class SignInScreen extends React.Component {
 
         <View style={styles.buttonContainer}>
           <ArrowButton
-            onPress={_ => this.props.navigation.navigate("ForgotPassword")}
+            onPress={() => this.props.navigation.navigate('ForgotPassword')}
             direction="left"
             label="Forgot Password"
           />
           <ArrowButton
-            onPress={_ => this.props.navigation.navigate("Register")}
+            onPress={() => this.props.navigation.navigate('Register')}
             direction="right"
             label="Register"
           />
@@ -174,23 +173,23 @@ class SignInScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     paddingLeft: 20,
     paddingRight: 20,
-    ...(isTablet ? { width: 400, alignSelf: "center" } : {})
+    ...(isTablet ? { width: 400, alignSelf: 'center' } : {}),
   },
   formContainer: {
     backgroundColor: colors.background,
     borderWidth: 2,
     borderRadius: 10,
     borderColor: colors.background,
-    overflow: "hidden",
-    marginBottom: 20
+    overflow: 'hidden',
+    marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  }
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
 
 export default connect(
@@ -198,6 +197,6 @@ export default connect(
   dispatch => ({
     updateCurrentUser: user => {
       dispatch(updateCurrentUser(user));
-    }
-  })
+    },
+  }),
 )(SignInScreen);

@@ -1,11 +1,11 @@
-import { UPDATE_CURRENT_USER } from "redux-constants/action-types";
+import { UPDATE_CURRENT_USER } from 'redux-constants/action-types';
 
 const initialState = {
   currentUser: {
-    name: "",
-    email: ""
+    name: '',
+    email: '',
   },
-  name: ""
+  name: '',
 };
 
 export default function sessionState(state = initialState, action) {
@@ -13,7 +13,7 @@ export default function sessionState(state = initialState, action) {
     case UPDATE_CURRENT_USER:
       return {
         ...state,
-        currentUser: action.user
+        currentUser: action.user,
       };
     default:
       return state;

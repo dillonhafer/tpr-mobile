@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { View, Text, TextInput, SafeAreaView } from "react-native";
+import React, { Component } from 'react';
+import { View, Text, TextInput, SafeAreaView } from 'react-native';
 
-import PrimaryButton from "components/forms/PrimaryButton";
-import CancelButton from "components/forms/CancelButton";
-import Form from "components/forms/Form";
-import TextInputContainer from "components/forms/TextInputContainer";
-import colors from "constants/colors";
-import Device from "utils/Device";
+import PrimaryButton from 'components/forms/PrimaryButton';
+import CancelButton from 'components/forms/CancelButton';
+import Form from 'components/forms/Form';
+import TextInputContainer from 'components/forms/TextInputContainer';
+import colors from 'constants/colors';
+import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 
 class ChangePasswordScreen extends Component {
@@ -18,15 +18,15 @@ class ChangePasswordScreen extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{ backgroundColor: "#7ab0b2", flex: 1 }}>
+      <SafeAreaView style={{ backgroundColor: '#7ab0b2', flex: 1 }}>
         <View style={styles.container}>
           <Text
             style={{
               fontSize: 16,
               color: colors.primary,
-              textAlign: "center",
-              fontFamily: "Verdana",
-              marginBottom: 10
+              textAlign: 'center',
+              fontFamily: 'Verdana',
+              marginBottom: 10,
             }}
           >
             Change Password
@@ -37,13 +37,13 @@ class ChangePasswordScreen extends Component {
                 style={{ height: 50 }}
                 enablesReturnKeyAutomatically={true}
                 secureTextEntry={true}
-                autoCapitalize={"none"}
-                underlineColorAndroid={"transparent"}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
                 ref={input => {
-                  this.inputs["password"] = input;
+                  this.inputs['password'] = input;
                 }}
-                onSubmitEditing={_ => {
-                  this.focusNextField("passwordConfirmation");
+                onSubmitEditing={() => {
+                  this.focusNextField('passwordConfirmation');
                 }}
                 returnKeyType="next"
                 placeholder="New Password"
@@ -55,13 +55,13 @@ class ChangePasswordScreen extends Component {
                 style={{ height: 50 }}
                 enablesReturnKeyAutomatically={true}
                 secureTextEntry={true}
-                autoCapitalize={"none"}
-                underlineColorAndroid={"transparent"}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
                 ref={input => {
-                  this.inputs["passwordConfirmation"] = input;
+                  this.inputs['passwordConfirmation'] = input;
                 }}
-                onSubmitEditing={_ => {
-                  this.focusNextField("currentPassword");
+                onSubmitEditing={() => {
+                  this.focusNextField('currentPassword');
                 }}
                 placeholder="Password Confirmation"
                 returnKeyType="next"
@@ -73,19 +73,19 @@ class ChangePasswordScreen extends Component {
             <TextInputContainer>
               <TextInput
                 placeholder="Current Password"
-                autoCapitalize={"none"}
-                underlineColorAndroid={"transparent"}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 secureTextEntry={true}
                 onSubmitEditing={this.handleSubscribe}
                 ref={input => {
-                  this.inputs["currentPassword"] = input;
+                  this.inputs['currentPassword'] = input;
                 }}
                 returnKeyType="done"
                 enablesReturnKeyAutomatically={true}
                 onChangeText={url =>
                   this.setState({
-                    url
+                    url,
                   })
                 }
               />
@@ -98,7 +98,7 @@ class ChangePasswordScreen extends Component {
             />
             {!isTablet && (
               <CancelButton
-                onPress={_ => this.props.navigation.goBack()}
+                onPress={() => this.props.navigation.goBack()}
                 label="Cancel"
                 loading={false}
               />
@@ -113,9 +113,9 @@ class ChangePasswordScreen extends Component {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 40
-  }
+    backgroundColor: '#fff',
+    paddingTop: 40,
+  },
 };
 
 export default ChangePasswordScreen;
