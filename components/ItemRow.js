@@ -35,7 +35,11 @@ class ItemRow extends Component {
   };
 
   handleOnPress = () => {
-    WebBrowser.openBrowserAsync(this.props.item.url);
+    if (this.props.onPress) {
+      this.props.onPress(this.props.item);
+    } else {
+      WebBrowser.openBrowserAsync(this.props.item.url);
+    }
   };
 
   handleOnLongPress = () => {

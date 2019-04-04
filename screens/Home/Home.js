@@ -55,13 +55,16 @@ export default class HomeScreen extends React.Component {
     });
   };
 
-  handleOnPress = async item => {
+  handleOnPress = item => {
     const items = this.state.items.filter(i => {
       return i.id !== item.id;
     });
-    await WebBrowser.openBrowserAsync(item.url);
-    this.setState({ items });
-    MarkItemReadRequest(item.id);
+
+    WebBrowser.openBrowserAsync(item.url).then(() => {
+      MarkItemReadRequest(item.id).then(() => {
+        this.setState({ items });
+      });
+    });
   };
 
   showMarkSomeReadModal = index => {
@@ -89,6 +92,7 @@ export default class HomeScreen extends React.Component {
         }}
       >
         <ItemRow
+          onPress={this.handleOnPress}
           onLongPress={this.showMarkSomeReadModal}
           item={item}
           index={index}
