@@ -17,7 +17,7 @@ import {
 import { WebBrowser } from 'expo';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
-import { throttle, values, orderBy } from 'lodash';
+import { debounce, values, orderBy } from 'lodash';
 import moment from 'moment';
 import MarkReadOverlay from 'components/MarkReadOverlay';
 import ItemRow from 'components/ItemRow';
@@ -216,7 +216,7 @@ class Feed extends React.Component {
       });
   };
 
-  showActionSheet = throttle(() => {
+  showActionSheet = debounce(() => {
     if (!this.state.items.length) {
       return;
     }
@@ -234,7 +234,7 @@ class Feed extends React.Component {
         }
       },
     );
-  }, 5000);
+  }, 500);
 
   render() {
     const { refreshing, items } = this.state;
