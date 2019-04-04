@@ -234,7 +234,7 @@ class Feed extends React.Component {
         }
       },
     );
-  }, 2000);
+  }, 5000);
 
   render() {
     const { refreshing, items } = this.state;
