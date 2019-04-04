@@ -17,12 +17,13 @@ import {
 import { WebBrowser } from 'expo';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
-import { values, orderBy } from 'lodash';
+import { throttle, values, orderBy } from 'lodash';
 import moment from 'moment';
 import MarkReadOverlay from 'components/MarkReadOverlay';
 import ItemRow from 'components/ItemRow';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
-export default class HomeScreen extends React.Component {
+class Feed extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam('feedName', 'Feed'),
@@ -215,6 +216,26 @@ export default class HomeScreen extends React.Component {
       });
   };
 
+  showActionSheet = throttle(() => {
+    if (!this.state.items.length) {
+      return;
+    }
+    const options = ['Mark All Read', 'Cancel'];
+    const cancelButtonIndex = 1;
+
+    this.props.showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+      },
+      buttonIndex => {
+        if (buttonIndex === 0) {
+          this.markAllRead();
+        }
+      },
+    );
+  }, 2000);
+
   render() {
     const { refreshing, items } = this.state;
     return (
@@ -241,6 +262,11 @@ export default class HomeScreen extends React.Component {
             keyExtractor={i => String(i.id)}
             ItemSeparatorComponent={this.renderSeparator}
             renderItem={this.renderItem}
+            onScroll={e => {
+              if (e.nativeEvent.contentOffset.y > 200) {
+                this.showActionSheet();
+              }
+            }}
           />
           {this.state.markReadModal.visible && (
             <MarkReadOverlay
@@ -267,3 +293,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
+
+export default connectActionSheet(Feed);
