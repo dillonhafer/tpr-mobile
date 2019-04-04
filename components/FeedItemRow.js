@@ -53,9 +53,8 @@ class ItemRow extends Component {
             onPress={this.handleOnPress}
           >
             <View style={styles.itemRow}>
-              <Text style={styles.title}>
-                {feed.name} ({feed.item_count})
-              </Text>
+              <Text style={styles.title}>{feed.name}</Text>
+              <Text style={styles.url}>{feed.url}</Text>
               {feed.last_publication_time && (
                 <Text style={styles.date}>
                   Last published{' '}
@@ -87,7 +86,13 @@ const styles = StyleSheet.create({
   date: {
     fontFamily: 'Verdana',
     color: colors.primary,
+    fontSize: 13,
+  },
+  url: {
+    fontFamily: 'Verdana',
+    color: '#777',
     fontSize: 11,
+    paddingVertical: 5,
   },
   feedFailure: {
     fontFamily: 'Verdana',
