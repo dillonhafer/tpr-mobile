@@ -1,5 +1,6 @@
 import { createStackNavigator as StackNavigator } from 'react-navigation';
 
+import colors from 'constants/colors';
 import FeedsScreen from 'screens/FeedsScreen';
 import FeedScreen from 'screens/Feed';
 
@@ -7,17 +8,18 @@ const FeedNavigator = StackNavigator(
   {
     Feeds: {
       screen: FeedsScreen,
-      navigationOptions: {
-        header: null,
-      },
     },
     FeedScreen: {
       screen: FeedScreen,
     },
   },
   {
-    navigationOptions: {
+    defaultNavigationOptions: {
       gesturesEnabled: true,
+      headerStyle: {
+        backgroundColor: colors.primary,
+      },
+      headerTintColor: '#fff',
     },
   },
 );

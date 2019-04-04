@@ -25,10 +25,6 @@ import ItemRow from 'components/ItemRow';
 export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerStyle: {
-        backgroundColor: colors.primary,
-      },
-      headerTintColor: '#fff',
       title: navigation.getParam('feedName', 'Feed'),
     };
   };

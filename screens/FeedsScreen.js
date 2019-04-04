@@ -2,11 +2,10 @@ import React from 'react';
 import {
   Platform,
   StyleSheet,
-  Text,
   TextInput,
-  TouchableHighlight,
   View,
   RefreshControl,
+  LayoutAnimation,
   FlatList,
   Alert,
   TouchableOpacity,
@@ -26,16 +25,30 @@ import { notice, error } from 'notify';
 import { GetExportURL } from 'utils/authentication';
 import PrimaryButton from 'components/forms/PrimaryButton';
 import { values } from 'lodash';
-import moment from 'moment';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 import FeedItemRow from 'components/FeedItemRow';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default class SettingsScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Feeds',
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Feeds',
+      headerRight: isTablet ? null : (
+        <TouchableOpacity
+          onPress={navigation.getParam('toggleImportExport', () => {})}
+        >
+          <Ionicons
+            style={{ paddingHorizontal: 25 }}
+            name="ios-cloud-upload"
+            size={28}
+            color="#fff"
+          />
+        </TouchableOpacity>
+      ),
+    };
   };
 
   state = {
@@ -44,13 +57,24 @@ export default class SettingsScreen extends React.Component {
     url: '',
     exportLoading: false,
     importLoading: false,
+    showImportExport: isTablet,
   };
 
   inputs = [];
 
   componentDidMount() {
     this.getFeeds();
+    this.props.navigation.setParams({
+      toggleImportExport: this.toggleImportExport,
+    });
   }
+
+  toggleImportExport = () => {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({
+      showImportExport: !this.state.showImportExport,
+    });
+  };
 
   getFeeds = async () => {
     const resp = await AllFeedsRequest();
@@ -192,10 +216,10 @@ export default class SettingsScreen extends React.Component {
   };
 
   renderFeedManager = () => {
-    const { exportLoading, importLoading } = this.state;
+    const { exportLoading, importLoading, showImportExport } = this.state;
 
     return (
-      <View>
+      <View style={{ ...(showImportExport ? {} : { height: 0 }) }}>
         <Form>
           <TextInputContainer>
             <TextInput
@@ -295,33 +319,5 @@ const styles = StyleSheet.create({
           borderLeftColor: colors.primary, // eslint-disable-line
         } // eslint-disable-line
       : {}),
-  },
-  title: {
-    fontFamily: 'Verdana',
-    color: colors.links,
-    fontWeight: '700',
-  },
-  itemRow: {
-    padding: 10,
-  },
-  date: {
-    fontFamily: 'Verdana',
-    color: colors.primary,
-    fontSize: 11,
-  },
-  unsubscribeContainer: {
-    paddingLeft: 10,
-    paddingBottom: 10,
-    paddingRight: 10,
-  },
-  unsubscribe: {
-    fontFamily: 'Verdana',
-    color: colors.links,
-    fontSize: 11,
-  },
-  feedFailure: {
-    fontFamily: 'Verdana',
-    color: colors.errorBackground,
-    fontSize: 11,
   },
 });
