@@ -22,7 +22,7 @@
       "backgroundColor": "#7ab0b2"
     },
     "ios": {
-      "buildNumber": "14",
+      "buildNumber": "15",
       "usesIcloudStorage": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.dillonhafer.tpr",
@@ -37,7 +37,7 @@
         "foregroundImage": "./app-store-assets/android-app-foreground.png"
       },
       "package": "com.dillonhafer.tpr",
-      "versionCode": 14,
+      "versionCode": 15,
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.dillonhafer.tpr",
       "permissions": []
     },
