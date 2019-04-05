@@ -18,7 +18,6 @@ import { WebBrowser } from 'expo';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
 import { debounce, values, orderBy } from 'lodash';
-import moment from 'moment';
 import MarkReadOverlay from 'components/MarkReadOverlay';
 import ItemRow from 'components/ItemRow';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
@@ -34,9 +33,7 @@ class Feed extends React.Component {
   container = null;
   state = {
     refreshing: false,
-    lastRefreshDate: moment(),
     markAllReadLoading: false,
-    items: [],
     markReadModal: {
       aboveHeight: 0,
       belowHeight: 0,
@@ -45,36 +42,28 @@ class Feed extends React.Component {
     },
   };
 
-  componentDidMount() {
-    this.getUnreadItems();
-  }
+  items = () => {
+    const feedID = this.props.navigation.getParam('feedID', -1);
+    return this.props.items.filter(i => i.feed_id === feedID);
+  };
 
   getUnreadItems = () => {
     return UnreadItemsRequest().then(resp => {
       if (resp.ok) {
-        const feedID = this.props.navigation.getParam('feedID', -1);
-        const items = values(resp);
-        const lastRefreshDate = moment();
-        this.setState({
-          lastRefreshDate,
-          items: orderBy(
-            items.slice(0, -1).filter(i => i.feed_id == feedID),
-            ['publication_time'],
-            ['desc'],
-          ),
-        });
+        const items = orderBy(
+          values(resp).slice(0, -1),
+          ['publication_time'],
+          ['desc'],
+        );
+        this.props.updateItems(items);
       }
     });
   };
 
   handleOnPress = item => {
-    const items = this.state.items.filter(i => {
-      return i.id !== item.id;
-    });
-
     WebBrowser.openBrowserAsync(item.url).then(() => {
       MarkItemReadRequest(item.id).then(() => {
-        this.setState({ items });
+        this.props.removeItem(item);
       });
     });
   };
@@ -114,21 +103,23 @@ class Feed extends React.Component {
   };
 
   markAllRead = () => {
-    const itemIDs = this.state.items.map(i => i.id);
-    this.setState({ items: [] });
-    MarkAllReadRequest({ itemIDs });
+    const itemIDs = this.items().map(i => i.id);
+    MarkAllReadRequest({ itemIDs }).then(() => {
+      this.props.removeItems(itemIDs);
+    });
   };
 
   markAboveRead = () => {
     const index = this.state.markReadModal.index;
-    const aboveIDs = this.state.items
+    const aboveIDs = this.items()
       .filter((i, idx) => idx < index)
       .map(i => i.id);
-    MarkAllReadRequest({ itemIDs: aboveIDs });
 
-    const items = this.state.items.filter((i, idx) => idx >= index);
+    MarkAllReadRequest({ itemIDs: aboveIDs }).then(() => {
+      this.props.removeItems(aboveIDs);
+    });
+
     this.setState({
-      items,
       markReadModal: {
         index: -1,
         height: 0,
@@ -141,14 +132,14 @@ class Feed extends React.Component {
 
   markBelowRead = () => {
     const index = this.state.markReadModal.index;
-    const belowIDs = this.state.items
+    const belowIDs = this.items()
       .filter((i, idx) => idx > index)
       .map(i => i.id);
-    MarkAllReadRequest({ itemIDs: belowIDs });
+    MarkAllReadRequest({ itemIDs: belowIDs }).then(() => {
+      this.props.removeItems(belowIDs);
+    });
 
-    const items = this.state.items.filter((i, idx) => idx <= index);
     this.setState({
-      items,
       markReadModal: {
         index: -1,
         height: 0,
@@ -160,7 +151,7 @@ class Feed extends React.Component {
   };
 
   renderHeader = () => {
-    if (this.state.items.length > 0) {
+    if (this.items().length > 0) {
       const { markAllReadLoading } = this.state;
       return (
         <View style={{ padding: 20, alignItems: 'center' }}>
@@ -199,7 +190,7 @@ class Feed extends React.Component {
           }}
         >
           No unread items as of{' '}
-          {this.state.lastRefreshDate.format('MMMM Do, YYYY, h:mm a')}.
+          {this.props.lastRefreshDate.format('MMMM Do, YYYY, h:mm a')}.
         </Text>
       </View>
     );
@@ -217,7 +208,7 @@ class Feed extends React.Component {
   };
 
   showActionSheet = debounce(() => {
-    if (!this.state.items.length) {
+    if (!this.items().length) {
       return;
     }
     const options = ['Mark All Read', 'Cancel'];
@@ -237,7 +228,8 @@ class Feed extends React.Component {
   }, 500);
 
   render() {
-    const { refreshing, items } = this.state;
+    const { refreshing } = this.state;
+    const items = this.items();
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View

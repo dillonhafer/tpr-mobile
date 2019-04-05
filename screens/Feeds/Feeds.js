@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TextInput,
   View,
+  Text,
   RefreshControl,
   LayoutAnimation,
   FlatList,
@@ -24,7 +25,7 @@ import colors from 'constants/colors';
 import { notice, error } from 'notify';
 import { GetExportURL } from 'utils/authentication';
 import PrimaryButton from 'components/forms/PrimaryButton';
-import { values } from 'lodash';
+import { values, groupBy } from 'lodash';
 import Form from 'components/forms/Form';
 import TextInputContainer from 'components/forms/TextInputContainer';
 import Device from 'utils/Device';
@@ -63,7 +64,6 @@ export default class SettingsScreen extends React.Component {
   inputs = [];
 
   componentDidMount() {
-    this.getFeeds();
     this.props.navigation.setParams({
       toggleImportExport: this.toggleImportExport,
     });
@@ -77,11 +77,12 @@ export default class SettingsScreen extends React.Component {
   };
 
   getFeeds = async () => {
-    const resp = await AllFeedsRequest();
-    if (resp && resp.ok) {
-      const feeds = values(resp);
-      this.setState({ feeds: feeds.slice(0, -1) });
-    }
+    AllFeedsRequest().then(resp => {
+      if (resp.ok) {
+        const feeds = values(resp).slice(0, -1);
+        this.props.updateFeeds(feeds);
+      }
+    });
   };
 
   importXML = async () => {
@@ -157,11 +158,11 @@ export default class SettingsScreen extends React.Component {
   };
 
   handleUnsubscribe = async feedID => {
-    const resp = await UnsubscribeFeedRequest(feedID);
-    if (resp && resp.ok) {
-      const feeds = this.state.feeds.filter(feed => feed.feed_id !== feedID);
-      this.setState({ feeds });
-    }
+    UnsubscribeFeedRequest(feedID).then(resp => {
+      if (resp.ok) {
+        this.props.removeFeed({ feed_id: feedID });
+      }
+    });
   };
 
   handleSubscribe = async () => {
@@ -185,6 +186,11 @@ export default class SettingsScreen extends React.Component {
   renderItem = ({ item: feed }) => {
     return (
       <FeedItemRow
+        unreadCount={
+          this.itemCounts[feed.feed_id]
+            ? this.itemCounts[feed.feed_id].length
+            : 0
+        }
         onPress={this.handleOnPress}
         feed={feed}
         onUnsubscribe={this.confirmUnsubscribe}
@@ -268,8 +274,26 @@ export default class SettingsScreen extends React.Component {
     );
   };
 
+  renderEmpty = () => {
+    return (
+      <View style={{ padding: 30, marginTop: 30 }}>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontFamily: 'Verdana',
+            color: colors.primary,
+          }}
+        >
+          You have no feed subscriptions
+        </Text>
+      </View>
+    );
+  };
+
   renderFeedList = () => {
-    const { refreshing, feeds } = this.state;
+    const { refreshing } = this.state;
+    const { feeds } = this.props;
+
     return (
       <FlatList
         refreshControl={
@@ -284,11 +308,18 @@ export default class SettingsScreen extends React.Component {
         keyExtractor={i => String(i.feed_id)}
         ItemSeparatorComponent={this.renderSeparator}
         renderItem={this.renderItem}
+        ListEmptyComponent={this.renderEmpty()}
       />
     );
   };
 
+  itemCounts = {};
+  getItemCounts = () => {
+    this.itemCounts = groupBy(this.props.items, 'feed_id');
+  };
+
   render() {
+    this.getItemCounts();
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.mainContainer}>{this.renderFeedManager()}</View>

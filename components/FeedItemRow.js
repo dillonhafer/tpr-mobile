@@ -53,7 +53,9 @@ class ItemRow extends Component {
             onPress={this.handleOnPress}
           >
             <View style={styles.itemRow}>
-              <Text style={styles.title}>{feed.name}</Text>
+              <Text style={styles.title}>
+                {feed.name} ({this.props.unreadCount} unread)
+              </Text>
               <Text style={styles.url}>{feed.url}</Text>
               {feed.last_publication_time && (
                 <Text style={styles.date}>

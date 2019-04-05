@@ -1,14 +1,15 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, ScreenOrientation } from 'expo';
+import { AppLoading, Font, ScreenOrientation } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 import Device from 'utils/Device';
 import { GetDomain, GetCurrentUser } from 'utils/authentication';
-import {
-  ActionSheetProvider,
-  connectActionSheet,
-} from '@expo/react-native-action-sheet';
+import { values, orderBy } from 'lodash';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import { UnreadItemsRequest } from 'api/items';
+import { AllFeedsRequest } from 'api/feeds';
+import { updateItems, updateFeeds } from 'actions/feeds';
 
 // Allow iPads to use landscape
 if (Platform.OS === 'ios' && Device.isTablet()) {
@@ -67,6 +68,22 @@ export default class App extends React.Component {
         type: 'UPDATE_CURRENT_USER',
         user,
       });
+    }
+
+    const resp = await UnreadItemsRequest();
+    if (resp.ok) {
+      const items = orderBy(
+        values(resp).slice(0, -1),
+        ['publication_time'],
+        ['desc'],
+      );
+      store.dispatch(updateItems(items));
+    }
+
+    const feedResp = await AllFeedsRequest();
+    if (feedResp.ok) {
+      const feeds = values(feedResp).slice(0, -1);
+      store.dispatch(updateFeeds(feeds));
     }
 
     return Promise.all([

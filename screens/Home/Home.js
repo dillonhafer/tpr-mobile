@@ -29,7 +29,6 @@ export default class HomeScreen extends React.Component {
     refreshing: false,
     lastRefreshDate: moment(),
     markAllReadLoading: false,
-    items: [],
     markReadModal: {
       aboveHeight: 0,
       belowHeight: 0,
@@ -38,31 +37,23 @@ export default class HomeScreen extends React.Component {
     },
   };
 
-  componentDidMount() {
-    this.getUnreadItems();
-  }
-
   getUnreadItems = () => {
     return UnreadItemsRequest().then(resp => {
       if (resp.ok) {
-        const items = values(resp);
-        const lastRefreshDate = moment();
-        this.setState({
-          lastRefreshDate,
-          items: orderBy(items.slice(0, -1), ['publication_time'], ['desc']),
-        });
+        const items = orderBy(
+          values(resp).slice(0, -1),
+          ['publication_time'],
+          ['desc'],
+        );
+        this.props.updateItems(items);
       }
     });
   };
 
   handleOnPress = item => {
-    const items = this.state.items.filter(i => {
-      return i.id !== item.id;
-    });
-
     WebBrowser.openBrowserAsync(item.url).then(() => {
       MarkItemReadRequest(item.id).then(() => {
-        this.setState({ items });
+        this.props.removeItem(item);
       });
     });
   };
@@ -102,21 +93,23 @@ export default class HomeScreen extends React.Component {
   };
 
   markAllRead = () => {
-    const itemIDs = this.state.items.map(i => i.id);
-    this.setState({ items: [] });
-    MarkAllReadRequest({ itemIDs });
+    const itemIDs = this.props.items.map(i => i.id);
+    MarkAllReadRequest({ itemIDs }).then(() => {
+      this.props.removeItems(itemIDs);
+    });
   };
 
   markAboveRead = () => {
     const index = this.state.markReadModal.index;
-    const aboveIDs = this.state.items
+    const aboveIDs = this.props.items
       .filter((i, idx) => idx < index)
       .map(i => i.id);
-    MarkAllReadRequest({ itemIDs: aboveIDs });
 
-    const items = this.state.items.filter((i, idx) => idx >= index);
+    MarkAllReadRequest({ itemIDs: aboveIDs }).then(() => {
+      this.props.removeItems(aboveIDs);
+    });
+
     this.setState({
-      items,
       markReadModal: {
         index: -1,
         height: 0,
@@ -129,14 +122,14 @@ export default class HomeScreen extends React.Component {
 
   markBelowRead = () => {
     const index = this.state.markReadModal.index;
-    const belowIDs = this.state.items
+    const belowIDs = this.props.items
       .filter((i, idx) => idx > index)
       .map(i => i.id);
-    MarkAllReadRequest({ itemIDs: belowIDs });
+    MarkAllReadRequest({ itemIDs: belowIDs }).then(() => {
+      this.props.removeItems(belowIDs);
+    });
 
-    const items = this.state.items.filter((i, idx) => idx <= index);
     this.setState({
-      items,
       markReadModal: {
         index: -1,
         height: 0,
@@ -148,7 +141,7 @@ export default class HomeScreen extends React.Component {
   };
 
   renderHeader = () => {
-    if (this.state.items.length > 0) {
+    if (this.props.items.length > 0) {
       const { markAllReadLoading } = this.state;
       return (
         <View style={{ padding: 20, alignItems: 'center' }}>
@@ -187,7 +180,7 @@ export default class HomeScreen extends React.Component {
           }}
         >
           No unread items as of{' '}
-          {this.state.lastRefreshDate.format('MMMM Do, YYYY, h:mm a')}.
+          {this.props.lastRefreshDate.format('MMMM Do, YYYY, h:mm a')}.
         </Text>
       </View>
     );
@@ -205,7 +198,8 @@ export default class HomeScreen extends React.Component {
   };
 
   render() {
-    const { refreshing, items } = this.state;
+    const { refreshing } = this.state;
+    const { items } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View
