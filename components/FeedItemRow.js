@@ -53,9 +53,7 @@ class ItemRow extends Component {
             onPress={this.handleOnPress}
           >
             <View style={styles.itemRow}>
-              <Text style={styles.title}>
-                {feed.name} ({this.props.unreadCount} unread)
-              </Text>
+              <Text style={styles.title}>{feed.name}</Text>
               <Text style={styles.url}>{feed.url}</Text>
               {feed.last_publication_time && (
                 <Text style={styles.date}>
@@ -67,6 +65,26 @@ class ItemRow extends Component {
               )}
               {feed.last_failure && (
                 <Text style={styles.feedFailure}>{feed.last_failure}</Text>
+              )}
+              {this.props.unreadCount > 0 && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    padding: 5,
+                    borderRadius: '50%',
+                    minHeight: 28,
+                    minWidth: 28,
+                    backgroundColor: 'red',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ color: 'white', fontWeight: '700' }}>
+                    {this.props.unreadCount}
+                  </Text>
+                </View>
               )}
             </View>
           </TouchableHighlight>
