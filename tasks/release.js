@@ -14,8 +14,8 @@ const checkCleanGit = () => {
 };
 
 let newBuildNumber;
-const bumpVersion = () => {
-  task("Bumping version");
+const bumpBuild = () => {
+  task("Bumping build");
   // Load file
   let app = JSON.parse(fs.readFileSync("app.json", "utf8"));
 
@@ -35,7 +35,7 @@ const bumpVersion = () => {
 const commitGitVersion = build => {
   task("Committing new version");
   const add = `git add -A`;
-  const commit = `git commit -m 'Bump version to ${build}'`;
+  const commit = `git commit -m 'Bump build to ${build}'`;
   try {
     execSync(add);
     execSync(commit);
@@ -69,7 +69,7 @@ const pushGitRemote = () => {
 };
 
 checkCleanGit();
-bumpVersion();
+bumpBuild();
 
 if (expoBuild("ios")) {
   commitGitVersion(newBuildNumber);
