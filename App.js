@@ -71,7 +71,7 @@ export default class App extends React.Component {
     }
 
     const resp = await UnreadItemsRequest();
-    if (resp.ok) {
+    if (resp && resp.ok) {
       const items = orderBy(
         values(resp).slice(0, -1),
         ['publication_time'],
@@ -81,7 +81,7 @@ export default class App extends React.Component {
     }
 
     const feedResp = await AllFeedsRequest();
-    if (feedResp.ok) {
+    if (feedResp && feedResp.ok) {
       const feeds = values(feedResp).slice(0, -1);
       store.dispatch(updateFeeds(feeds));
     }

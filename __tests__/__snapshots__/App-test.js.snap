@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders the loading screen 1`] = `null`;
+
+exports[`renders the root without loading screen 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#7ab0b2",
+      "flex": 1,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "#7ab0b2",
+          "flex": 1,
+        }
+      }
+    />
+  </View>
+</View>
+`;
