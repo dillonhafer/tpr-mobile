@@ -14,7 +14,7 @@ import {
   MarkItemReadRequest,
   MarkAllReadRequest,
 } from 'api/items';
-import { WebBrowser } from 'expo';
+import * as WebBrowser from 'expo-web-browser';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
 import { values, orderBy } from 'lodash';

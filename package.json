@@ -20,6 +20,8 @@
     "eslint": "^5.16.0",
     "eslint-plugin-react-native": "^3.6.0",
     "expo": "^33.0.0",
+    "expo-font": "~5.0.1",
+    "expo-secure-store": "~5.0.1",
     "expo-web-browser": "~5.0.2",
     "moment": "^2.20.1",
     "react": "16.8.3",

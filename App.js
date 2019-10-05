@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Font, ScreenOrientation } from 'expo';
+import { AppLoading, ScreenOrientation } from 'expo';
+import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 import Device from 'utils/Device';

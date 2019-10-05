@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import colors from 'constants/colors';
-import { WebBrowser } from 'expo';
+import * as WebBrowser from 'expo-web-browser';
 import moment from 'moment';
 
 // EXP

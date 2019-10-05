@@ -2,7 +2,7 @@ const SESSION_KEY = '_tpr_session';
 const DOMAIN_KEY = '_tpr_domain';
 const USER_KEY = '_tpr_user';
 
-import { SecureStore } from 'expo';
+import * as SecureStore from 'expo-secure-store';
 
 export function SetAuthenticationToken(token) {
   try {
