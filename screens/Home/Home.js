@@ -37,6 +37,12 @@ export default class HomeScreen extends React.Component {
     },
   };
 
+  componentDidMount() {
+    if (this.props.items.length === 0) {
+      this.onRefresh();
+    }
+  }
+
   getUnreadItems = () => {
     return UnreadItemsRequest().then(resp => {
       if (resp.ok) {

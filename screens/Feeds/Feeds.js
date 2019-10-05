@@ -67,6 +67,10 @@ export default class SettingsScreen extends React.Component {
     this.props.navigation.setParams({
       toggleImportExport: this.toggleImportExport,
     });
+
+    if (this.props.feeds.length === 0) {
+      this.onRefresh();
+    }
   }
 
   toggleImportExport = () => {
