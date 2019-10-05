@@ -25,7 +25,7 @@ import {
   RemoveAuthentication,
   GetAuthenticationToken,
 } from 'utils/authentication';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import Device from 'utils/Device';
 const isTablet = Device.isTablet();
 
