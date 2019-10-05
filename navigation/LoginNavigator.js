@@ -15,7 +15,7 @@ import SignInScreen from 'screens/SignInScreen';
 import RegisterScreen from 'screens/RegisterScreen';
 import DomainSettings from 'components/DomainSettings';
 
-import logo from 'assets/images/book.png';
+import logo from 'images/book.png';
 
 import { connect } from 'react-redux';
 import { updateDomain } from 'actions/appConfig';
