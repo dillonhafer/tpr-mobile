@@ -5,7 +5,7 @@ import {
   GetDomain,
 } from 'utils/authentication';
 import { error } from 'notify';
-import { Constants, Util } from 'expo';
+import { Util } from 'expo';
 
 const base = async (path, method, headers = {}, body = {}) => {
   try {
