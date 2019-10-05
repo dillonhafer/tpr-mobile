@@ -20,7 +20,8 @@ import {
   UnsubscribeFeedRequest,
   ImportFeedRequest,
 } from 'api/feeds';
-import { FileSystem, DocumentPicker } from 'expo';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import colors from 'constants/colors';
 import { notice, error } from 'notify';
 import { GetExportURL } from 'utils/authentication';
