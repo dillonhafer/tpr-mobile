@@ -15,8 +15,7 @@ import SignInScreen from 'screens/SignInScreen';
 import RegisterScreen from 'screens/RegisterScreen';
 import DomainSettings from 'components/DomainSettings';
 
-import logo from 'images/book.png';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import logo from 'assets/images/book.png';
 
 import { connect } from 'react-redux';
 import { updateDomain } from 'actions/appConfig';
@@ -65,7 +64,7 @@ class TabNavigator extends React.Component {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && (
-          <KeyboardAwareScrollView scrollEnabled={false}>
+          <View style={{ flex: 1 }}>
             <View style={styles.logoContainer}>
               <Image style={styles.logo} source={logo} />
               <Text style={styles.logoText}>The Pithy Reader</Text>
@@ -90,7 +89,7 @@ class TabNavigator extends React.Component {
               navigation={this.props.navigation}
               screenProps={{ parentNavigation: this.props.navigation }}
             />
-          </KeyboardAwareScrollView>
+          </View>
         )}
 
         {Platform.OS !== 'ios' && [
