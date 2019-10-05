@@ -59,6 +59,7 @@ export default class App extends React.Component {
 
   _loadResourcesAsync = async () => {
     const domain = await GetDomain();
+
     if (domain) {
       store.dispatch({ type: 'UPDATE_DOMAIN', domain });
     }
@@ -71,20 +72,22 @@ export default class App extends React.Component {
       });
     }
 
-    const resp = await UnreadItemsRequest();
-    if (resp && resp.ok) {
-      const items = orderBy(
-        values(resp).slice(0, -1),
-        ['publication_time'],
-        ['desc'],
-      );
-      store.dispatch(updateItems(items));
-    }
+    if (user) {
+      const resp = await UnreadItemsRequest();
+      if (resp && resp.ok) {
+        const items = orderBy(
+          values(resp).slice(0, -1),
+          ['publication_time'],
+          ['desc'],
+        );
+        store.dispatch(updateItems(items));
+      }
 
-    const feedResp = await AllFeedsRequest();
-    if (feedResp && feedResp.ok) {
-      const feeds = values(feedResp).slice(0, -1);
-      store.dispatch(updateFeeds(feeds));
+      const feedResp = await AllFeedsRequest();
+      if (feedResp && feedResp.ok) {
+        const feeds = values(feedResp).slice(0, -1);
+        store.dispatch(updateFeeds(feeds));
+      }
     }
 
     return Promise.all([
