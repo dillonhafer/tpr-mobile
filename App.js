@@ -12,10 +12,10 @@ import { AllFeedsRequest } from 'api/feeds';
 import { updateItems, updateFeeds } from 'actions/feeds';
 
 // Allow iPads to use landscape
-if (Platform.OS === 'ios' && Device.isTablet()) {
-  ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
-} else {
-  ScreenOrientation.allowAsync(ScreenOrientation.Orientation.PORTRAIT_UP);
+if (Platform.OS === 'ios' && !Device.isTablet()) {
+  ScreenOrientation.lockAsync(
+    ScreenOrientation.OrientationLock.PORTRAIT_UP,
+  ).catch(() => {});
 }
 
 // Redux
