@@ -20,11 +20,42 @@ export function SetDomain(domain) {
   }
 }
 
-export function GetDomain() {
+const defaultDomain = String.fromCharCode(
+  116,
+  112,
+  114,
+  46,
+  106,
+  97,
+  99,
+  107,
+  99,
+  104,
+  114,
+  105,
+  115,
+  116,
+  101,
+  110,
+  115,
+  101,
+  110,
+  46,
+  99,
+  111,
+  109,
+);
+
+export async function GetDomain() {
   try {
-    return SecureStore.getItemAsync(DOMAIN_KEY);
-  } catch (err) {
-    return '';
+    let domain = defaultDomain;
+    const storedDomain = await SecureStore.getItemAsync(DOMAIN_KEY);
+    if (storedDomain) {
+      domain = storedDomain;
+    }
+    return domain;
+  } catch {
+    return defaultDomain;
   }
 }
 
@@ -63,8 +94,10 @@ export async function GetCurrentUser() {
 
 export async function RemoveAuthentication() {
   try {
-    SecureStore.deleteItemAsync(SESSION_KEY);
-    SecureStore.deleteItemAsync(USER_KEY);
+    await Promise.all([
+      SecureStore.deleteItemAsync(SESSION_KEY),
+      SecureStore.deleteItemAsync(USER_KEY),
+    ]);
     return;
   } catch (err) {
     return null;
