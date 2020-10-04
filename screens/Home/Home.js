@@ -44,7 +44,7 @@ export default class HomeScreen extends React.Component {
   }
 
   getUnreadItems = () => {
-    return UnreadItemsRequest().then(resp => {
+    return UnreadItemsRequest().then((resp) => {
       if (resp.ok) {
         const items = orderBy(
           values(resp).slice(0, -1),
@@ -56,7 +56,7 @@ export default class HomeScreen extends React.Component {
     });
   };
 
-  handleOnPress = item => {
+  handleOnPress = (item) => {
     WebBrowser.openBrowserAsync(item.url).then(() => {
       MarkItemReadRequest(item.id).then(() => {
         this.props.removeItem(item);
@@ -64,27 +64,27 @@ export default class HomeScreen extends React.Component {
     });
   };
 
-  showMarkSomeReadModal = index => {
-    this.itemRefs[index].measure((fx, fy, width, height, px, py) => {
-      this.container.measure((_, __, ___, ____, _____, safeViewHeight) => {
-        this.setState({
-          markReadModal: {
-            index,
-            aboveHeight: py - safeViewHeight,
-            belowHeight: 1000,
-            height,
-            visible: true,
-          },
-        });
-        LayoutAnimation.easeInEaseOut();
-      });
-    });
+  showMarkSomeReadModal = (index) => {
+    // this.itemRefs[index].measure((fx, fy, width, height, px, py) => {
+    // this.container.measure((_, __, ___, ____, _____, safeViewHeight) => {
+    //   this.setState({
+    //     markReadModal: {
+    //       index,
+    //       aboveHeight: py - safeViewHeight,
+    //       belowHeight: 1000,
+    //       height,
+    //       visible: true,
+    //     },
+    //   });
+    //   LayoutAnimation.easeInEaseOut();
+    // });
+    // });
   };
 
   renderItem = ({ item, index }) => {
     return (
       <View
-        ref={ref => {
+        ref={(ref) => {
           this.itemRefs[index] = ref;
         }}
       >
@@ -99,7 +99,7 @@ export default class HomeScreen extends React.Component {
   };
 
   markAllRead = () => {
-    const itemIDs = this.props.items.map(i => i.id);
+    const itemIDs = this.props.items.map((i) => i.id);
     MarkAllReadRequest({ itemIDs }).then(() => {
       this.props.removeItems(itemIDs);
     });
@@ -109,7 +109,7 @@ export default class HomeScreen extends React.Component {
     const index = this.state.markReadModal.index;
     const aboveIDs = this.props.items
       .filter((i, idx) => idx < index)
-      .map(i => i.id);
+      .map((i) => i.id);
 
     MarkAllReadRequest({ itemIDs: aboveIDs }).then(() => {
       this.props.removeItems(aboveIDs);
@@ -130,7 +130,7 @@ export default class HomeScreen extends React.Component {
     const index = this.state.markReadModal.index;
     const belowIDs = this.props.items
       .filter((i, idx) => idx > index)
-      .map(i => i.id);
+      .map((i) => i.id);
     MarkAllReadRequest({ itemIDs: belowIDs }).then(() => {
       this.props.removeItems(belowIDs);
     });
@@ -209,7 +209,7 @@ export default class HomeScreen extends React.Component {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View
-          ref={con => {
+          ref={(con) => {
             this.container = con;
           }}
           style={styles.container}
@@ -227,7 +227,7 @@ export default class HomeScreen extends React.Component {
             }
             style={styles.list}
             data={items}
-            keyExtractor={i => String(i.id)}
+            keyExtractor={(i) => String(i.id)}
             ItemSeparatorComponent={this.renderSeparator}
             renderItem={this.renderItem}
           />

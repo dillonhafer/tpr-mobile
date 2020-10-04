@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, ScreenOrientation } from 'expo';
+import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
@@ -11,6 +11,7 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { UnreadItemsRequest } from 'api/items';
 import { AllFeedsRequest } from 'api/feeds';
 import { updateItems, updateFeeds } from 'actions/feeds';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 // Allow iPads to use landscape
 if (Platform.OS === 'ios' && !Device.isTablet()) {
@@ -98,7 +99,7 @@ export default class App extends React.Component {
     ]);
   };
 
-  _handleLoadingError = error => {
+  _handleLoadingError = (error) => {
     // In this case, you might want to report the error to your error
     // reporting service, for example Sentry
     console.warn(error);

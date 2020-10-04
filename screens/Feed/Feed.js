@@ -14,7 +14,7 @@ import {
   MarkItemReadRequest,
   MarkAllReadRequest,
 } from 'api/items';
-import * as WebBrowser from 'expo-web-browser'
+import * as WebBrowser from 'expo-web-browser';
 import colors from 'constants/colors';
 import PrimaryButton from 'components/forms/PrimaryButton';
 import { debounce, values, orderBy } from 'lodash';
@@ -44,11 +44,11 @@ class Feed extends React.Component {
 
   items = () => {
     const feedID = this.props.navigation.getParam('feedID', -1);
-    return this.props.items.filter(i => i.feed_id === feedID);
+    return this.props.items.filter((i) => i.feed_id === feedID);
   };
 
   getUnreadItems = () => {
-    return UnreadItemsRequest().then(resp => {
+    return UnreadItemsRequest().then((resp) => {
       if (resp.ok) {
         const items = orderBy(
           values(resp).slice(0, -1),
@@ -60,7 +60,7 @@ class Feed extends React.Component {
     });
   };
 
-  handleOnPress = item => {
+  handleOnPress = (item) => {
     WebBrowser.openBrowserAsync(item.url).then(() => {
       MarkItemReadRequest(item.id).then(() => {
         this.props.removeItem(item);
@@ -68,27 +68,27 @@ class Feed extends React.Component {
     });
   };
 
-  showMarkSomeReadModal = index => {
-    this.itemRefs[index].measure((fx, fy, width, height, px, py) => {
-      this.container.measure((_, __, ___, ____, _____, safeViewHeight) => {
-        this.setState({
-          markReadModal: {
-            index,
-            aboveHeight: py - safeViewHeight,
-            belowHeight: 1000,
-            height,
-            visible: true,
-          },
-        });
-        LayoutAnimation.easeInEaseOut();
-      });
-    });
+  showMarkSomeReadModal = (index) => {
+    // this.itemRefs[index].measure((fx, fy, width, height, px, py) => {
+    //   this.container.measure((_, __, ___, ____, _____, safeViewHeight) => {
+    //     this.setState({
+    //       markReadModal: {
+    //         index,
+    //         aboveHeight: py - safeViewHeight,
+    //         belowHeight: 1000,
+    //         height,
+    //         visible: true,
+    //       },
+    //     });
+    //     LayoutAnimation.easeInEaseOut();
+    //   });
+    // });
   };
 
   renderItem = ({ item, index }) => {
     return (
       <View
-        ref={ref => {
+        ref={(ref) => {
           this.itemRefs[index] = ref;
         }}
       >
@@ -103,7 +103,7 @@ class Feed extends React.Component {
   };
 
   markAllRead = () => {
-    const itemIDs = this.items().map(i => i.id);
+    const itemIDs = this.items().map((i) => i.id);
     MarkAllReadRequest({ itemIDs }).then(() => {
       this.props.removeItems(itemIDs);
     });
@@ -113,7 +113,7 @@ class Feed extends React.Component {
     const index = this.state.markReadModal.index;
     const aboveIDs = this.items()
       .filter((i, idx) => idx < index)
-      .map(i => i.id);
+      .map((i) => i.id);
 
     MarkAllReadRequest({ itemIDs: aboveIDs }).then(() => {
       this.props.removeItems(aboveIDs);
@@ -134,7 +134,7 @@ class Feed extends React.Component {
     const index = this.state.markReadModal.index;
     const belowIDs = this.items()
       .filter((i, idx) => idx > index)
-      .map(i => i.id);
+      .map((i) => i.id);
     MarkAllReadRequest({ itemIDs: belowIDs }).then(() => {
       this.props.removeItems(belowIDs);
     });
@@ -219,7 +219,7 @@ class Feed extends React.Component {
         options,
         cancelButtonIndex,
       },
-      buttonIndex => {
+      (buttonIndex) => {
         if (buttonIndex === 0) {
           this.markAllRead();
         }
@@ -233,7 +233,7 @@ class Feed extends React.Component {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View
-          ref={con => {
+          ref={(con) => {
             this.container = con;
           }}
           style={styles.container}
@@ -251,10 +251,10 @@ class Feed extends React.Component {
             }
             style={styles.list}
             data={items}
-            keyExtractor={i => String(i.id)}
+            keyExtractor={(i) => String(i.id)}
             ItemSeparatorComponent={this.renderSeparator}
             renderItem={this.renderItem}
-            onScroll={e => {
+            onScroll={(e) => {
               if (e.nativeEvent.contentOffset.y > 200) {
                 this.showActionSheet();
               }

@@ -4,7 +4,7 @@
     "description": "A fast, simple, and lightweight feed aggregator and reader.",
     "slug": "tpr",
     "privacy": "unlisted",
-    "sdkVersion": "35.0.0",
+    "sdkVersion": "39.0.0",
     "platforms": ["ios", "android"],
     "version": "2.3.0",
     "githubUrl": "https://github.com/dillonhafer/tpr-mobile",

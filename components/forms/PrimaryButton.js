@@ -9,10 +9,6 @@ import {
 import colors from 'constants/colors';
 
 class PrimaryButton extends PureComponent {
-  UNSAFE__componentWillUpdate() {
-    LayoutAnimation.easeInEaseOut();
-  }
-
   render() {
     const { label, onPress, disabled, loading } = this.props;
     const _disabled = disabled || loading;
